@@ -24,9 +24,9 @@
   
   /* 过渡动画 */
   transition: var(--glass-transition-normal);
-  
-  /* 防止内容溢出 */
-  overflow: hidden;
+
+  /* 允许 tooltip 超出边界显示 */
+  overflow: visible;
 }
 
 /* 简化的液态玻璃光泽效果 */

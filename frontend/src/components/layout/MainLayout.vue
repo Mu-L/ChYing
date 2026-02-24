@@ -60,7 +60,7 @@ const handleModuleError = (errorInfo: ErrorInfoForHandler) => {
       </div>
 
       <!-- Main Content -->
-      <div class="flex-1 flex flex-col overflow-hidden app-layout-main">
+      <div class="flex-1 flex flex-col app-layout-main">
         <!-- Header -->
         <div class="app-layout-header flex-shrink-0">
           <Header @toggle-notifications="toggleNotifications" />
@@ -135,7 +135,6 @@ const handleModuleError = (errorInfo: ErrorInfoForHandler) => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .app-layout-header {

@@ -6,9 +6,9 @@
     "loading": "Loading",
     "time": "Time",
     "theme": {
-      "light": "Light Mode",
-      "dark": "Dark Mode",
-      "system": "System Default"
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
     },
     "language": {
       "title": "Language",
