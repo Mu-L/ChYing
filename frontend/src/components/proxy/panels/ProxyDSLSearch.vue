@@ -1,26 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, nextTick } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-// 使用any类型处理找不到的模块
 // @ts-ignore
 import { QueryHistoryByDSL } from '../../../../bindings/github.com/yhy0/ChYing/app.js';
 
-// 使用国际化
 const { t } = useI18n();
-
-// 定义组件事件
 const emit = defineEmits(['search-results', 'clear-search', 'notify']);
 
-// DSL 查询表达式
 const dslQuery = ref('');
-// 是否显示输入提示
 const showSuggestions = ref(false);
-// 提示列表
 const suggestions = ref<Array<{value: string, description: string, type: string}>>([]);
-// 历史搜索记录
 const searchHistory = ref<string[]>([]);
-// 最大历史记录数量
 const MAX_HISTORY = 10;
+// 键盘导航：当前选中的建议索引，-1 表示无选中
+const selectedIndex = ref(-1);
+const inputRef = ref<HTMLInputElement | null>(null);
 
 // 内置字段提示
 const builtinFields = [
@@ -38,14 +32,18 @@ const builtinFields = [
   { value: 'request', description: t('modules.proxy.dsl.field_request') },
 ];
 
-// 内置函数提示
+// 运算符提示
+const operators = [
+  { value: '== ', description: t('modules.proxy.dsl.function_equals'), type: 'operator' },
+  { value: '!= ', description: t('modules.proxy.dsl.function_not_equals'), type: 'operator' },
+  { value: '&& ', description: t('modules.proxy.dsl.function_and'), type: 'operator' },
+  { value: '|| ', description: t('modules.proxy.dsl.function_or'), type: 'operator' },
+];
+
+// 函数提示
 const builtinFunctions = [
-  { value: 'contains(', description: t('modules.proxy.dsl.function_contains') },
-  { value: 'regex(', description: t('modules.proxy.dsl.function_regex') },
-  { value: '&&', description: t('modules.proxy.dsl.function_and') },
-  { value: '||', description: t('modules.proxy.dsl.function_or') },
-  { value: '==', description: t('modules.proxy.dsl.function_equals') },
-  { value: '!=', description: t('modules.proxy.dsl.function_not_equals') },
+  { value: 'contains(', description: t('modules.proxy.dsl.function_contains'), type: 'function' },
+  { value: 'regex(', description: t('modules.proxy.dsl.function_regex'), type: 'function' },
 ];
 
 // 示例查询表达式
@@ -59,112 +57,189 @@ const dslExamples = [
   { name: t('modules.proxy.dsl.example_combined'), query: 'method == "GET" && status == "200"' }
 ];
 
-// 默认建议列表
+// 默认建议列表（空输入时显示）
 const defaultSuggestions = [
   { value: 'status == "200"', description: '查找所有成功请求', type: 'example' },
   { value: 'contains(path, "/api/")', description: '查找API路径', type: 'example' },
   { value: 'method == "POST"', description: '查找POST请求', type: 'example' },
-  { value: 'status', description: t('modules.proxy.dsl.field_status'), type: 'field' },
-  { value: 'method', description: t('modules.proxy.dsl.field_method'), type: 'field' },
-  { value: 'contains(', description: t('modules.proxy.dsl.function_contains'), type: 'function' }
 ];
 
-// 获取当前正在输入的单词
-function getCurrentWord(text: string): string {
-  const cursorPosition = text.length;
-  let startPos = cursorPosition;
-  
-  // 向前查找单词的开始位置
-  while (startPos > 0) {
-    const char = text.charAt(startPos - 1);
-    // 如果遇到空格、括号、引号、运算符等分隔符则停止
-    if (/[\s()'"=!&|,.<>?:;[\]{}+\-*/]/.test(char)) {
-      break;
-    }
-    startPos--;
+// 上下文类型
+type InputContext = 'empty' | 'field' | 'after_field' | 'after_operator' | 'after_func_open' | 'after_comma' | 'in_string' | 'after_close';
+
+// 分析光标前的输入上下文
+function getInputContext(text: string): { context: InputContext; currentWord: string; wordStart: number } {
+  const trimmed = text.trimEnd();
+
+  // 空输入
+  if (!trimmed) {
+    return { context: 'empty', currentWord: '', wordStart: 0 };
   }
-  
-  return text.substring(startPos, cursorPosition);
+
+  // 在引号内 — 不提示
+  let inDouble = false;
+  for (const ch of trimmed) {
+    if (ch === '"') inDouble = !inDouble;
+  }
+  if (inDouble) {
+    return { context: 'in_string', currentWord: '', wordStart: text.length };
+  }
+
+  // 取光标前最后一个有意义 token
+  const tail = trimmed;
+
+  // 刚关闭引号或右括号后 → 提示运算符/逻辑符
+  if (/[")]\s*$/.test(tail)) {
+    return { context: 'after_close', currentWord: '', wordStart: text.length };
+  }
+
+  // 在逗号后（函数参数分隔符） → 提示引号开头的值
+  if (/,\s*$/.test(tail)) {
+    return { context: 'after_comma', currentWord: '', wordStart: text.length };
+  }
+
+  // 在运算符（==, !=）后 → 提示引号开头的值
+  if (/[=!]=\s*$/.test(tail)) {
+    return { context: 'after_operator', currentWord: '', wordStart: text.length };
+  }
+
+  // 在左括号后（函数参数起始） → 提示字段
+  if (/\(\s*$/.test(tail)) {
+    return { context: 'after_func_open', currentWord: '', wordStart: text.length };
+  }
+
+  // 在 && 或 || 后 → 提示字段/函数（新表达式起始）
+  if (/(\&\&|\|\|)\s*$/.test(tail)) {
+    return { context: 'field', currentWord: '', wordStart: text.length };
+  }
+
+  // 正在输入一个单词（字段名或函数名）
+  const wordMatch = tail.match(/([a-zA-Z_][a-zA-Z0-9_]*)$/);
+  if (wordMatch) {
+    const currentWord = wordMatch[1];
+    const wordStart = text.length - currentWord.length;
+    // 判断这个单词前面是什么
+    const before = tail.substring(0, tail.length - currentWord.length).trimEnd();
+    if (!before || /(\&\&|\|\||\()\s*$/.test(before)) {
+      // 在表达式起始/逻辑符后/括号后输入 → 输入字段或函数名
+      return { context: 'field', currentWord, wordStart };
+    }
+    // 在字段名后继续输入 → 仍在输入字段
+    return { context: 'field', currentWord, wordStart };
+  }
+
+  // 一个完整字段名后跟空格 → 提示运算符
+  if (/[a-zA-Z_][a-zA-Z0-9_]*\s+$/.test(tail)) {
+    return { context: 'after_field', currentWord: '', wordStart: text.length };
+  }
+
+  return { context: 'field', currentWord: '', wordStart: text.length };
 }
 
 // 更新建议列表
 const updateSuggestions = () => {
-  // 先确保我们有数据可以显示
   showSuggestions.value = true;
-  
-  // 生成所有可能的建议
-  let allSuggestions = [
-    // 所有字段
-    ...builtinFields.map(field => ({ 
-      value: field.value, 
-      description: field.description,
-      type: 'field'
-    })),
-    // 所有函数
-    ...builtinFunctions.map(func => ({ 
-      value: func.value, 
-      description: func.description,
-      type: 'function'
-    })),
-    // 历史记录
-    ...searchHistory.value.slice(0, 3).map(hist => ({ 
-      value: hist, 
-      description: t('modules.proxy.dsl.previous_search'),
-      type: 'history'
-    }))
-  ];
-  
-  // 无论是否有输入，都始终显示一些默认建议
-  let filteredSuggestions = allSuggestions;
-  
-  // 如果有输入，则过滤建议
-  if (dslQuery.value.trim()) {
-    const currentWord = getCurrentWord(dslQuery.value);
-    const lowercaseWord = currentWord.toLowerCase();
-    
-    // 过滤匹配的建议
-    filteredSuggestions = allSuggestions.filter(suggestion => 
-      currentWord === '' || suggestion.value.toLowerCase().includes(lowercaseWord)
-    );
+  selectedIndex.value = -1;
+
+  const text = dslQuery.value;
+  const { context, currentWord } = getInputContext(text);
+
+  let result: Array<{value: string, description: string, type: string}> = [];
+
+  switch (context) {
+    case 'empty':
+      // 空输入：显示历史记录 + 示例 + 常用字段/函数
+      result = [
+        ...searchHistory.value.slice(0, 3).map(h => ({
+          value: h, description: t('modules.proxy.dsl.previous_search'), type: 'history'
+        })),
+        ...defaultSuggestions,
+        ...builtinFunctions,
+      ];
+      break;
+
+    case 'field':
+    case 'after_func_open':
+      // 输入字段名或函数名
+      {
+        const lower = currentWord.toLowerCase();
+        const fields = builtinFields
+          .filter(f => !lower || f.value.includes(lower))
+          .map(f => ({ value: f.value, description: f.description, type: 'field' }));
+        const funcs = builtinFunctions
+          .filter(f => !lower || f.value.toLowerCase().includes(lower))
+          .map(f => ({ ...f }));
+        result = [...fields, ...funcs];
+      }
+      break;
+
+    case 'after_field':
+      // 字段名后 → 提示运算符
+      result = [...operators];
+      break;
+
+    case 'after_operator':
+      // 运算符后 → 提示带引号的值模板
+      result = [
+        { value: '"200"', description: '状态码 200', type: 'value' },
+        { value: '"GET"', description: 'GET 方法', type: 'value' },
+        { value: '"POST"', description: 'POST 方法', type: 'value' },
+        { value: '"application/json"', description: 'JSON 类型', type: 'value' },
+      ];
+      break;
+
+    case 'after_comma':
+      // 函数逗号后 → 提示带引号的值
+      result = [
+        { value: ' "', description: '输入匹配值...', type: 'value' },
+      ];
+      break;
+
+    case 'after_close':
+      // 表达式闭合后 → 提示逻辑运算符
+      result = [
+        { value: ' && ', description: t('modules.proxy.dsl.function_and'), type: 'operator' },
+        { value: ' || ', description: t('modules.proxy.dsl.function_or'), type: 'operator' },
+      ];
+      break;
+
+    case 'in_string':
+      // 在引号内 → 不提示
+      result = [];
+      break;
   }
-  
-  // 如果过滤后没有结果，使用默认建议
-  if (filteredSuggestions.length === 0) {
-    filteredSuggestions = defaultSuggestions;
-  }
-  
-  // 限制显示数量，确保不会太多
-  suggestions.value = filteredSuggestions.slice(0, 8);
-  
+
+  suggestions.value = result.slice(0, 8);
 };
 
 // 应用选中的建议
 const applySuggestion = (suggestion: { value: string, type: string }) => {
-  const currentWord = getCurrentWord(dslQuery.value);
-  const currentPos = dslQuery.value.length;
-  const startPos = currentPos - currentWord.length;
-  
-  if (suggestion.type === 'history') {
-    // 如果是历史记录，直接替换整个查询
+  if (suggestion.type === 'history' || suggestion.type === 'example') {
+    // 历史记录和示例直接替换整个查询
     dslQuery.value = suggestion.value;
   } else {
-    // 替换当前单词
-    dslQuery.value = dslQuery.value.substring(0, startPos) + suggestion.value + 
-      (suggestion.type === 'function' ? '' : ' ');
+    const { currentWord, wordStart } = getInputContext(dslQuery.value);
+    // 替换当前正在输入的单词
+    const prefix = dslQuery.value.substring(0, wordStart);
+    const val = suggestion.value;
+    // 函数类型不追加空格（光标要在括号内），其他已自带空格的不追加
+    const suffix = (suggestion.type === 'function' || val.endsWith(' ') || val.endsWith('"')) ? '' : ' ';
+    dslQuery.value = prefix + val + suffix;
   }
-  
+
   showSuggestions.value = false;
+  selectedIndex.value = -1;
+
   // 聚焦回输入框
-  setTimeout(() => {
-    const inputEl = document.querySelector('.dsl-search-input') as HTMLInputElement;
-    if (inputEl) {
-      inputEl.focus();
-      // 如果是函数，将光标放在括号内
-      if (suggestion.type === 'function') {
-        inputEl.selectionStart = inputEl.selectionEnd = startPos + suggestion.value.length;
-      }
+  const el = inputRef.value;
+  if (el) {
+    el.focus();
+    // 函数类型：光标放在括号内
+    if (suggestion.type === 'function') {
+      const pos = dslQuery.value.length;
+      setTimeout(() => { el.selectionStart = el.selectionEnd = pos; }, 0);
     }
-  }, 0);
+  }
 };
 
 // 是否显示帮助信息
@@ -261,13 +336,11 @@ const selectExample = (query: string) => {
 
 // 输入框焦点事件
 const handleInputFocus = () => {
-  showSuggestions.value = true;
   updateSuggestions();
 };
 
 // 输入事件
 const handleInput = () => {
-  showSuggestions.value = true;
   updateSuggestions();
 };
 
@@ -276,45 +349,43 @@ const handleInputBlur = () => {
   // 延迟关闭建议，以便可以点击建议
   setTimeout(() => {
     showSuggestions.value = false;
-  }, 300); // 增加延迟时间，确保有足够时间点击
+    selectedIndex.value = -1;
+  }, 200);
 };
 
 // 输入框键盘事件
 const handleInputKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Enter') {
-    executeDSLQuery();
-  } else if (event.key === 'Escape') {
-    showSuggestions.value = false;
+  if (!shouldShowSuggestions.value) {
+    if (event.key === 'Enter') executeDSLQuery();
+    return;
+  }
+
+  switch (event.key) {
+    case 'ArrowDown':
+      event.preventDefault();
+      selectedIndex.value = (selectedIndex.value + 1) % suggestions.value.length;
+      break;
+    case 'ArrowUp':
+      event.preventDefault();
+      selectedIndex.value = selectedIndex.value <= 0
+        ? suggestions.value.length - 1
+        : selectedIndex.value - 1;
+      break;
+    case 'Tab':
+    case 'Enter':
+      if (selectedIndex.value >= 0 && selectedIndex.value < suggestions.value.length) {
+        event.preventDefault();
+        applySuggestion(suggestions.value[selectedIndex.value]);
+      } else if (event.key === 'Enter') {
+        executeDSLQuery();
+      }
+      break;
+    case 'Escape':
+      showSuggestions.value = false;
+      selectedIndex.value = -1;
+      break;
   }
 };
-
-// 测试强制更新建议
-const forceUpdateSuggestions = () => {
-  // 强制重置建议状态
-  showSuggestions.value = true;
-  suggestions.value = [];
-  
-  // 应用默认建议
-  suggestions.value = [
-    { value: 'status == "200"', description: '查找所有成功请求', type: 'example' },
-    { value: 'method == "POST"', description: '查找POST请求', type: 'example' },
-    { value: 'status', description: t('modules.proxy.dsl.field_status'), type: 'field' },
-    { value: 'method', description: t('modules.proxy.dsl.field_method'), type: 'field' }
-  ];
-  
-  // 确保DOM已更新
-  nextTick(() => {
-    const suggestionsEl = document.querySelector('.dsl-suggestions');
-  
-    if (!suggestionsEl) {
-      console.error('建议DOM元素不存在！');
-    }
-  });
-};
-
-// 创建测试函数
-// @ts-ignore - 忽略类型检查
-window.testDSLSuggestions = forceUpdateSuggestions;
 
 // 初始化时从localStorage加载搜索历史
 onMounted(() => {
@@ -349,61 +420,53 @@ const shouldShowSuggestions = computed(() => {
 <template>
   <div class="dsl-search-container">
     <div class="dsl-search-input-wrapper">
-      <input 
+      <input
         ref="inputRef"
-        type="text" 
+        type="text"
         v-model="dslQuery"
         :placeholder="t('modules.proxy.dsl.query_placeholder')"
         class="dsl-search-input"
-        @keyup.enter="executeDSLQuery"
         @input="handleInput"
         @focus="handleInputFocus"
         @blur="handleInputBlur"
         @keydown="handleInputKeydown"
         spellcheck="false"
       />
-      
-      <!-- 调试按钮 -->
-      <button 
-        class="debug-button" 
-        type="button" 
-        title="调试建议"
-        @click="forceUpdateSuggestions"
-      >
-        <i class="bx bx-bug"></i>
-      </button>
-      
+
       <!-- 输入建议下拉列表 (使用计算属性) -->
       <div 
         class="dsl-suggestions" 
         v-if="shouldShowSuggestions"
       >
-        <div class="dsl-suggestions-debug">
-          {{ suggestions.length }}个建议可用 | 状态: {{ showSuggestions ? '显示' : '隐藏' }}
-        </div>
-        <div 
-          v-for="suggestion in suggestions" 
-          :key="suggestion.value"
+        <div
+          v-for="(suggestion, index) in suggestions"
+          :key="suggestion.value + index"
           class="dsl-suggestion-item"
+          :class="{ 'dsl-suggestion-selected': index === selectedIndex }"
           @mousedown.prevent="applySuggestion(suggestion)"
+          @mouseenter="selectedIndex = index"
         >
           <div class="dsl-suggestion-value">
-            <span 
-              class="dsl-suggestion-icon" 
+            <span
+              class="dsl-suggestion-icon"
               :class="{
                 'field-icon': suggestion.type === 'field',
                 'function-icon': suggestion.type === 'function',
                 'history-icon': suggestion.type === 'history',
-                'example-icon': suggestion.type === 'example'
+                'example-icon': suggestion.type === 'example',
+                'operator-icon': suggestion.type === 'operator',
+                'value-icon': suggestion.type === 'value'
               }"
             >
-              <i 
-                class="bx" 
+              <i
+                class="bx"
                 :class="{
                   'bx-box': suggestion.type === 'field',
                   'bx-code-alt': suggestion.type === 'function',
                   'bx-history': suggestion.type === 'history',
-                  'bx-bulb': suggestion.type === 'example'
+                  'bx-bulb': suggestion.type === 'example',
+                  'bx-math': suggestion.type === 'operator',
+                  'bx-text': suggestion.type === 'value'
                 }"
               ></i>
             </span>
@@ -472,7 +535,6 @@ const shouldShowSuggestions = computed(() => {
         <h5>{{ t('modules.proxy.dsl.available_fields') }}</h5>
         <ul class="dsl-fields-list">
           <li><code>id</code> - {{ t('modules.proxy.dsl.field_id') }}</li>
-          <li><code>flow_id</code> - {{ t('modules.proxy.dsl.field_flow_id') }}</li>
           <li><code>url</code> - {{ t('modules.proxy.dsl.field_url') }}</li>
           <li><code>path</code> - {{ t('modules.proxy.dsl.field_path') }}</li>
           <li><code>method</code> - {{ t('modules.proxy.dsl.field_method') }}</li>

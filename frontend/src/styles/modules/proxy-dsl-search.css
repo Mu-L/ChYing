@@ -130,14 +130,6 @@
   margin-top: 2px;
 }
 
-.dsl-suggestions-debug {
-  padding: 6px 8px;
-  font-size: 10px;
-  color: var(--color-text-secondary);
-  background-color: var(--color-bg-secondary);
-  border-bottom: 1px dashed var(--color-border);
-}
-
 .dsl-suggestion-item {
   display: flex;
   justify-content: space-between;
@@ -147,7 +139,8 @@
   transition: background-color 0.2s;
 }
 
-.dsl-suggestion-item:hover {
+.dsl-suggestion-item:hover,
+.dsl-suggestion-selected {
   background-color: var(--color-bg-hover);
 }
 
@@ -183,6 +176,14 @@
 
 .example-icon {
   color: var(--color-yellow);
+}
+
+.operator-icon {
+  color: var(--color-orange, #f59e0b);
+}
+
+.value-icon {
+  color: var(--color-green, #10b981);
 }
 
 .dsl-suggestion-description {

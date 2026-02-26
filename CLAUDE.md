@@ -52,7 +52,7 @@ go test ./test/ -run TestXxx -v      # 运行单个测试
 `App` struct 是 Wails 暴露给前端的核心服务，其方法按职责拆分：
 
 - `main.go` — 入口，Wails 应用创建、窗口配置、事件转发循环 `EventNotification()`
-- `app.go` — App struct 定义、类型定义（Result/InitStep/InitProgress 等）、全局变量、init()
+- `app.go` — App struct 定义（持有 `*api.APIManager`）、类型定义（Result/InitStep/InitProgress 等）、全局变量（channels/Pool/lock/HTTPHistoryMap）、init()
 - `app_initialization.go` — 分步初始化流程（7 步：基础组件 → 配置加载 → 数据库 → 表结构 → 代理启动 → 项目加载 → 完成）
 - `app_proxy.go` — 代理作用域配置、DSL 查询、匹配替换规则、越权检测、监听器管理
 - `app_config.go` — 配置管理（读取/更新/保存配置文件）
@@ -91,11 +91,43 @@ Vue 3 + TypeScript + UnoCSS，Glassmorphism（液态玻璃）UI 风格。
 - `lib/gowsdl/` — WSDL 解析
 - `lib/webUnPack/` — Web 解包工具
 
+## 关键架构细节
+
+### 事件驱动通信
+
+前后端通过两种机制通信：
+1. **Wails 绑定**：App struct 的方法直接暴露给前端调用，统一返回 `Result{Data, Error}`
+2. **Wails 事件**：`main.go` 中的 `EventNotification()` 协程持续监听 `mitmproxy.EventDataChan`，将代理流量事件通过 `wailsApp.Event.Emit` 推送到前端，同时通过 goroutine pool 异步持久化 HTTP 历史到 SQLite
+
+### 多窗口架构
+
+前端使用 hash 路由，支持多个独立窗口：
+- `/` — 项目选择页（无布局框架）
+- `/app/*` — 主窗口（MainLayout 包裹：proxy、repeater、intruder、decoder、plugins、settings）
+- `/scanLog`、`/vulnerability`、`/claude-agent`、`/plugin/:pluginId` — 独立弹出窗口
+
+### SQLite 并发约束
+
+数据库使用 WAL 模式，**连接池限制为 1**（MaxOpenConns=1），通过写互斥锁防止 "database is locked" 错误，锁定操作有指数退避重试逻辑。修改数据库相关代码时必须注意并发安全。
+
+### 配置系统注意事项
+
+- viper 会将所有 YAML 键名转为小写，但前端需要 camelCase。`conf/normalize.go` 中的 `NormalizeConfigYAML()` 负责转换回 camelCase
+- Jie 扫描器有独立的 `GlobalConfig`，通过 `conf.SyncJieConfig()` 从 ChYing 主配置同步
+- 热加载有 2 秒防抖
+
+### go.mod replace 指令
+
+修改依赖时需注意以下 replace 指令：
+- `wails/v3 => ../wails/v3` — 本地 wails 源码
+- `proxify => ./lib/proxify` — 本地修改版
+- `wappalyzergo` → 自定义 fork `yhy0/wappalyzergo`
+- `zcrypto`、`quic-go`、`fetchup` — 版本冲突修复
+
 ## 关键约定
 
-- 前后端通信通过 Wails 绑定（App struct 方法）和 Wails 事件（`wailsApp.Event.Emit`）
 - 统一返回结构 `Result{Data, Error}` — 不使用类型别名（Wails v3 binding 生成器的限制）
 - 配置文件位于 `~/.config/ChYing/`，HTTPS 证书在 `~/.config/ChYing/proxify_data/cacert.pem`
 - 日志文件在 `~/.config/ChYing/` 目录下
 - Windows 构建必须使用 `PRODUCTION=true`，否则 sqlite 崩溃
-- go.mod 中有多个 replace 指令处理依赖冲突，修改依赖时需注意
+- CI/CD 通过 GitHub Actions 在 tag 推送时触发，构建 5 个平台目标（Windows/Linux amd64、Linux arm64、macOS amd64/arm64）

@@ -1,7 +1,7 @@
 package mitmproxy
 
 import (
-	"bytes" // 新增，用于 GetHTTPBody 返回错误
+	"bytes"
 	"fmt"
 	"io"
 	"math" // 需要导入 math 包以使用 math.MaxInt

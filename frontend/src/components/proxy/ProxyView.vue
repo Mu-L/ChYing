@@ -487,20 +487,34 @@ const handleDSLSearchResults = (results: any[]) => {
   if (!results || results.length === 0) {
     // 如果结果为空，显示通知并清空表格
     showNotification(t('modules.proxy.dsl.no_results'), 'error');
+    // 启用 DSL 过滤标志
+    dslFilterEnabled.value = true;
     // 使用空数组更新表格，显示"无结果"状态
     store.setProxyHistory([]);
   } else {
-    // 格式化时间戳并转换状态码为数字
-    results.forEach(item => {
-      if (item.Timestamp) {
-        item.timestamp = item.Timestamp;
-      }
-      if (item.Status) {
-        item.status = Number(item.Status);
-      }
-    });
+    // 启用 DSL 过滤标志（必须在 setProxyHistory 之前设置，防止 watch 覆盖 originalProxyHistory）
+    dslFilterEnabled.value = true;
+    // 字段映射：后端返回 snake_case，前端需要 camelCase
+    const mappedResults = results.map((item: any) => ({
+      id: item.id,
+      method: item.method,
+      url: item.full_url,
+      host: item.host,
+      path: item.path,
+      status: parseInt(item.status) || 0,
+      length: parseInt(item.length) || 0,
+      mimeType: item.mime_type || '',
+      extension: item.extension || '',
+      title: item.title || '',
+      ip: item.ip || '',
+      note: item.note || '',
+      color: item.color || '',
+      timestamp: item.timestamp || new Date().toISOString(),
+      request: '',
+      response: ''
+    }));
     // 更新表格数据
-    store.setProxyHistory(results);
+    store.setProxyHistory(mappedResults);
   }
 };
 
