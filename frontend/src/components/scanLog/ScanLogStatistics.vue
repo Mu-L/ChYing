@@ -60,7 +60,7 @@ const getModuleIcon = (moduleName: string): string => {
     <div class="stats-section">
       <div class="section-title">
         <i class="bx bx-bar-chart-alt-2"></i>
-        <span>{{ t('scanLog.statistics.overview', '总览') }}</span>
+        <span>{{ t('scanLog.statistics.overview') }}</span>
       </div>
 
       <div class="overview-card">
@@ -69,7 +69,7 @@ const getModuleIcon = (moduleName: string): string => {
         </div>
         <div class="overview-content">
           <div class="overview-number">{{ statistics.total.toLocaleString() }}</div>
-          <div class="overview-label">{{ t('scanLog.statistics.totalLogs', '扫描记录') }}</div>
+          <div class="overview-label">{{ t('scanLog.statistics.totalLogs') }}</div>
         </div>
       </div>
     </div>
@@ -78,7 +78,7 @@ const getModuleIcon = (moduleName: string): string => {
     <div class="stats-section" v-if="moduleStats.length > 0">
       <div class="section-title">
         <i class="bx bx-pie-chart-alt-2"></i>
-        <span>{{ t('scanLog.statistics.modules', '模块分布') }}</span>
+        <span>{{ t('scanLog.statistics.modules') }}</span>
       </div>
 
       <div class="module-list">
@@ -113,7 +113,7 @@ const getModuleIcon = (moduleName: string): string => {
     <!-- 空状态 -->
     <div v-else class="empty-stats">
       <i class="bx bx-bar-chart"></i>
-      <span>{{ t('scanLog.statistics.noData', '暂无统计数据') }}</span>
+      <span>{{ t('scanLog.statistics.noData') }}</span>
     </div>
   </div>
 </template>

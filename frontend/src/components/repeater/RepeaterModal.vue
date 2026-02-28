@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue';
+import { ref, nextTick, watch, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   show: boolean;
@@ -16,15 +19,15 @@ const inputName = ref('');
 const selectedColor = ref('#4f46e5');
 
 // 预定义的颜色选项
-const colorOptions = [
-  { id: 'default', value: '#4f46e5', label: '默认 (紫色)' },
-  { id: 'red', value: '#ef4444', label: '红色' },
-  { id: 'green', value: '#10b981', label: '绿色' },
-  { id: 'blue', value: '#3b82f6', label: '蓝色' },
-  { id: 'yellow', value: '#f59e0b', label: '黄色' },
-  { id: 'orange', value: '#f97316', label: '橙色' },
-  { id: 'teal', value: '#14b8a6', label: '青色' },
-];
+const colorOptions = computed(() => [
+  { id: 'default', value: '#4f46e5', label: t('modules.repeater.modal.default_purple') },
+  { id: 'red', value: '#ef4444', label: t('modules.repeater.modal.red') },
+  { id: 'green', value: '#10b981', label: t('modules.repeater.modal.green') },
+  { id: 'blue', value: '#3b82f6', label: t('modules.repeater.modal.blue') },
+  { id: 'yellow', value: '#f59e0b', label: t('modules.repeater.modal.yellow') },
+  { id: 'orange', value: '#f97316', label: t('modules.repeater.modal.orange') },
+  { id: 'teal', value: '#14b8a6', label: t('modules.repeater.modal.cyan') },
+]);
 
 const submit = () => {
   if (inputName.value.trim()) {
@@ -81,20 +84,20 @@ watch(() => props.show, (newShow) => {
       </div>
       <div class="repeater-modal-body">
         <div class="repeater-form-group">
-          <label for="group-name-input" class="repeater-form-label">名称</label>
-          <input 
+          <label for="group-name-input" class="repeater-form-label">{{ t('modules.repeater.modal.name_label') }}</label>
+          <input
             id="group-name-input"
-            type="text" 
-            v-model="inputName" 
-            class="repeater-input w-full" 
-            placeholder="请输入名称"
+            type="text"
+            v-model="inputName"
+            class="repeater-input w-full"
+            :placeholder="t('modules.repeater.modal.enter_name')"
             @keydown="handleKeyDown"
             spellcheck="false"
           />
         </div>
         
         <div class="repeater-form-group">
-          <label class="repeater-form-label">颜色</label>
+          <label class="repeater-form-label">{{ t('modules.repeater.modal.color_label') }}</label>
           <div class="repeater-color-options">
             <div 
               v-for="color in colorOptions" 
@@ -110,13 +113,13 @@ watch(() => props.show, (newShow) => {
         </div>
       </div>
       <div class="repeater-modal-footer">
-        <button class="btn btn-secondary mr-2" @click="close">取消</button>
+        <button class="btn btn-secondary mr-2" @click="close">{{ t('common.actions.cancel') }}</button>
         <button 
           class="btn btn-primary" 
           @click="submit"
           :disabled="!inputName.trim()"
         >
-          {{ submitText || '确认' }}
+          {{ submitText || t('common.confirm.default_confirm') }}
         </button>
       </div>
     </div>

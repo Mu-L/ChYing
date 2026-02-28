@@ -342,7 +342,7 @@ watch(() => props.visible, () => {
     >
       <i class="bx bx-trash-alt text-red-600"></i>
       清空所有历史记录
-      <span class="text-xs text-gray-400 ml-auto">数据库+内存</span>
+      <span class="text-xs text-gray-400 ml-auto">{{ t('modules.proxy.db_and_memory') }}</span>
     </button>
     <button 
       class="context-menu-item text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20"
@@ -350,7 +350,7 @@ watch(() => props.visible, () => {
     >
       <i class="bx bx-memory-card text-orange-600"></i>
       仅清理内存数据
-      <span class="text-xs text-gray-400 ml-auto">保留数据库</span>
+      <span class="text-xs text-gray-400 ml-auto">{{ t('modules.proxy.keep_database') }}</span>
     </button>
     
     <!-- 取消 -->
@@ -393,7 +393,7 @@ watch(() => props.visible, () => {
           backgroundColor: colorOption.color || 'transparent',
           '--option-color': colorOption.color || 'transparent'
         }"
-        :title="colorOption.id === 'none' ? '移除颜色' : `设置为${colorOption.id}色`"
+        :title="colorOption.id === 'none' ? t('modules.proxy.remove_color') : t('modules.proxy.set_color_to', { color: colorOption.id })"
       >
         <i v-if="colorOption.id === 'none'" class="bx bx-x text-red-500 text-xl font-bold"></i>
         <span v-if="request?.color === colorOption.color" class="selected-indicator">✓</span>

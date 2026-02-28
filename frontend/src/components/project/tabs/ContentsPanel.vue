@@ -171,9 +171,9 @@ onBeforeUnmount(() => {
           <!-- 节点基本信息 -->
           <div class="grid grid-cols-2 gap-4 mb-3 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg">
             <div v-if="selectedNode.nodeType">
-              <label class="block text-2xs text-gray-500 dark:text-gray-400 uppercase mb-0.5 font-medium">类型</label>
+              <label class="block text-2xs text-gray-500 dark:text-gray-400 uppercase mb-0.5 font-medium">{{ t('modules.project.contents.node_type') }}</label>
               <div class="text-xs text-gray-800 dark:text-gray-200">
-                {{ selectedNode.nodeType === 'host' ? '主机' : selectedNode.nodeType === 'directory' ? '目录' : '文件' }}
+                {{ selectedNode.nodeType === 'host' ? t('modules.project.contents.host') : selectedNode.nodeType === 'directory' ? t('modules.project.contents.directory') : t('modules.project.contents.file') }}
                 <span v-if="hostNode?.rawData?.cdn"
                   class="px-1.5 py-0.5 text-2xs rounded-full font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
                   CDN

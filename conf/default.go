@@ -22,7 +22,7 @@ var Parallelism = 99
 var Description = fmt.Sprintf("将旦昧爽之交，日夕昏明之际，\n北面而察之，淡淡焉若有物存，莫识其状。\n其所触也，窃窃然有声，经物而物不疾也。\n\n© %d https://github.com/yhy0", time.Now().Year())
 
 const (
-	Version        = "2.1.0"
+	Version        = "2.1.1"
 	Title          = "承影 v" + Version
 	VersionNewMsg  = "当前已经是最新版本!"
 	VersionOldMsg  = "最新版本: %s, 是否立即更新?"
@@ -44,6 +44,9 @@ proxy:
       host: "127.0.0.1"
       port: 9080
       enabled: true
+
+# MCP Server 端口配置
+mcp_port: 9245
 
 # 扫描配置
 scan:

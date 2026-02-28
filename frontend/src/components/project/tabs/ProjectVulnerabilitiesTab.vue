@@ -88,22 +88,22 @@ const getVulnerabilityTypeIcon = (type: string) => {
     <!-- 标题和统计信息 -->
     <div class="px-4 pt-4 pb-3 border-b border-gray-200 dark:border-gray-700">
       <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-        {{ t('project.vulnerabilities.title', '漏洞信息') }}
+        {{ t('project.vulnerabilities.title') }}
       </h2>
       
       <!-- 漏洞统计 -->
       <div class="flex flex-wrap gap-2">
         <div class="py-1 px-2 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-medium" v-if="vulnerabilityStats.high > 0">
-          {{ t('project.vulnerabilities.high', '高危') }}: {{ vulnerabilityStats.high }}
+          {{ t('project.vulnerabilities.high') }}: {{ vulnerabilityStats.high }}
         </div>
         <div class="py-1 px-2 rounded-md bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 text-xs font-medium" v-if="vulnerabilityStats.medium > 0">
-          {{ t('project.vulnerabilities.medium', '中危') }}: {{ vulnerabilityStats.medium }}
+          {{ t('project.vulnerabilities.medium') }}: {{ vulnerabilityStats.medium }}
         </div>
         <div class="py-1 px-2 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-medium" v-if="vulnerabilityStats.low > 0">
-          {{ t('project.vulnerabilities.low', '低危') }}: {{ vulnerabilityStats.low }}
+          {{ t('project.vulnerabilities.low') }}: {{ vulnerabilityStats.low }}
         </div>
         <div class="py-1 px-2 rounded-md bg-gray-500/10 text-gray-600 dark:text-gray-400 text-xs font-medium" v-if="vulnerabilityStats.info > 0">
-          {{ t('project.vulnerabilities.info', '信息') }}: {{ vulnerabilityStats.info }}
+          {{ t('project.vulnerabilities.info') }}: {{ vulnerabilityStats.info }}
         </div>
       </div>
     </div>
@@ -112,7 +112,7 @@ const getVulnerabilityTypeIcon = (type: string) => {
     <div v-if="isLoading" class="flex-1 flex items-center justify-center p-4">
       <div class="text-center">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500 mb-2"></div>
-        <p class="text-gray-500 dark:text-gray-400">{{ t('project.vulnerabilities.loading', '加载漏洞数据...') }}</p>
+        <p class="text-gray-500 dark:text-gray-400">{{ t('project.vulnerabilities.loading') }}</p>
       </div>
     </div>
     
@@ -120,7 +120,7 @@ const getVulnerabilityTypeIcon = (type: string) => {
     <div v-else-if="vulnerabilities.length === 0" class="flex-1 flex items-center justify-center p-4">
       <div class="text-center">
         <i class="bx bx-shield-quarter text-5xl text-gray-300 dark:text-gray-600 mb-2"></i>
-        <p class="text-gray-500 dark:text-gray-400">{{ t('project.vulnerabilities.noData', '暂无漏洞数据') }}</p>
+        <p class="text-gray-500 dark:text-gray-400">{{ t('project.vulnerabilities.noData') }}</p>
       </div>
     </div>
     
@@ -173,7 +173,7 @@ const getVulnerabilityTypeIcon = (type: string) => {
           
           <div>
             <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {{ t('project.vulnerabilities.typeLabel', '漏洞类型') }}
+              {{ t('project.vulnerabilities.typeLabel') }}
             </div>
             <div class="text-gray-800 dark:text-gray-200">
               {{ selectedVulnerability.vulnType }}
@@ -182,7 +182,7 @@ const getVulnerabilityTypeIcon = (type: string) => {
           
           <div v-if="selectedVulnerability.target">
             <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {{ t('project.vulnerabilities.targetLabel', '目标地址') }}
+              {{ t('project.vulnerabilities.targetLabel') }}
             </div>
             <div class="text-gray-800 dark:text-gray-200 font-mono text-sm">
               {{ selectedVulnerability.target }}
@@ -191,7 +191,7 @@ const getVulnerabilityTypeIcon = (type: string) => {
           
           <div v-if="selectedVulnerability.description">
             <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {{ t('project.vulnerabilities.descriptionLabel', '漏洞描述') }}
+              {{ t('project.vulnerabilities.descriptionLabel') }}
             </div>
             <div class="text-gray-800 dark:text-gray-200">
               {{ selectedVulnerability.description }}
@@ -207,28 +207,28 @@ const getVulnerabilityTypeIcon = (type: string) => {
           
           <div v-if="selectedVulnerability.request">
             <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {{ t('project.vulnerabilities.requestLabel', '请求内容') }}
+              {{ t('project.vulnerabilities.requestLabel') }}
             </div>
             <pre class="whitespace-pre-wrap bg-gray-50 dark:bg-gray-800 p-3 rounded-md text-sm overflow-auto max-h-[30vh] border border-gray-200 dark:border-gray-700 font-mono">{{ selectedVulnerability.request }}</pre>
           </div>
           
           <div v-if="selectedVulnerability.response">
             <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {{ t('project.vulnerabilities.responseLabel', '响应内容') }}
+              {{ t('project.vulnerabilities.responseLabel') }}
             </div>
             <pre class="whitespace-pre-wrap bg-gray-50 dark:bg-gray-800 p-3 rounded-md text-sm overflow-auto max-h-[30vh] border border-gray-200 dark:border-gray-700 font-mono">{{ selectedVulnerability.response }}</pre>
           </div>
           
           <div v-if="selectedVulnerability.curlCommand">
             <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {{ t('project.vulnerabilities.curlLabel', 'cURL 命令') }}
+              {{ t('project.vulnerabilities.curlLabel') }}
             </div>
             <pre class="whitespace-pre-wrap bg-gray-50 dark:bg-gray-800 p-3 rounded-md text-sm border border-gray-200 dark:border-gray-700 font-mono">{{ selectedVulnerability.curlCommand }}</pre>
           </div>
         </div>
         
         <div v-else class="h-full flex items-center justify-center">
-          <p class="text-gray-500 dark:text-gray-400">{{ t('project.vulnerabilities.selectPrompt', '请选择左侧漏洞查看详情') }}</p>
+          <p class="text-gray-500 dark:text-gray-400">{{ t('project.vulnerabilities.selectPrompt') }}</p>
         </div>
       </div>
     </div>

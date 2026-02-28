@@ -265,7 +265,7 @@ const getReplaceExampleForType = (type: RuleType) => {
     case 'request_header':
       return 'User-Agent: Mozilla/5.0 (ChYing-Inside)';
     case 'request_body':
-      return 'password":"替换后的密码"';
+      return 'password":"replaced_password"';
     case 'response_header':
       return 'Server: Hidden';
     case 'response_body':
@@ -355,7 +355,7 @@ const matchReplaceColumns = computed<HttpTrafficColumn<any>[]>(() => [
             toggleRuleEnabled(originalRule);
           }
         },
-        title: '启用或禁用此规则'
+        title: t('modules.proxy.toggle_rule_enabled')
       }, [
         h('input', {
           type: 'checkbox',

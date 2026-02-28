@@ -31,7 +31,7 @@ const pluginMeta: Record<string, { nameKey: string; icon: string; color: string 
 const currentPlugin = computed(() => pluginMeta[pluginId.value]);
 const pluginName = computed(() => {
   if (isAllPlugins.value) {
-    return t('modules.plugins.title', '插件');
+    return t('modules.plugins.title');
   }
   const meta = currentPlugin.value;
   return meta ? t(meta.nameKey) : pluginId.value;
@@ -70,7 +70,7 @@ onUnmounted(() => {
     <div v-if="!isAllPlugins" class="plugin-header">
       <div class="header-title">
         <i v-if="currentPlugin" :class="`bx ${currentPlugin.icon} ${currentPlugin.color}`"></i>
-        <h3>{{ pluginName }} - {{ t('modules.plugins.independent_window', '独立窗口') }}</h3>
+        <h3>{{ pluginName }} - {{ t('modules.plugins.independent_window') }}</h3>
       </div>
     </div>
 

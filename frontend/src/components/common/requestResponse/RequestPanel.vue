@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, watch, onBeforeUnmount as vueOnBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { HttpRequestViewer } from '../codemirror';
 import type { RequestViewType } from '../../../utils/viewerUtils';
 import {
@@ -26,6 +27,8 @@ const emit = defineEmits<{
 
 // 请求标题
 const computedRequestTitle = computed(() => props.requestTitle || 'Request');
+
+const { t } = useI18n();
 
 // 处理请求视图类型切换
 const setRequestViewType = (type: RequestViewType) => {
@@ -130,22 +133,22 @@ vueOnBeforeUnmount(() => {
           :class="{ 'active': bodyFormatted }"
         >
           <i class="bx bx-code-curly text-base"></i>
-          <span class="tooltip-text">{{ bodyFormatted ? '显示原始格式' : '格式化 Body' }}</span>
+          <span class="tooltip-text">{{ bodyFormatted ? t('common.request_response.show_raw') : t('common.request_response.format_body') }}</span>
         </button>
-        <button 
+        <button
           class="action-button mr-2 tooltip-container"
           @click="emit('toggle-word-wrap')"
           :class="{ 'active': wordWrap }"
         >
           <i class="bx bx-text text-base"></i>
-          <span class="tooltip-text">切换自动换行</span>
+          <span class="tooltip-text">{{ t('common.request_response.toggle_word_wrap') }}</span>
         </button>
-        <button 
+        <button
           class="action-button tooltip-container"
           @click="copyRequest"
         >
           <i class="bx bx-clipboard text-base"></i>
-          <span class="tooltip-text">复制请求</span>
+          <span class="tooltip-text">{{ t('common.request_response.copy_request') }}</span>
         </button>
       </div>
     </div>

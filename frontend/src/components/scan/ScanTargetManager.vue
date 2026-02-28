@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, nextTick } from 'vue';
-import type { 
-  ScanTarget, 
-  ScanTargetStatus, 
-  ScanTargetType, 
+import { useI18n } from 'vue-i18n';
+import type {
+  ScanTarget,
+  ScanTargetStatus,
+  ScanTargetType,
   ScanConfig,
   ScanStatistics,
   AddScanTargetParams,
@@ -11,14 +12,22 @@ import type {
   SchedulerStatus
 } from '../../types/scanTarget';
 import {
-  STATUS_OPTIONS,
-  TYPE_OPTIONS,
-  PRIORITY_OPTIONS,
-  SCHEDULE_TYPE_OPTIONS,
+  getStatusOptions,
+  getTypeOptions,
+  getPriorityOptions,
+  getScheduleTypeOptions,
   STATUS_COLOR_MAP,
-  STATUS_TEXT_MAP,
-  TYPE_TEXT_MAP
+  getStatusTextMap,
+  getTypeTextMap
 } from '../../types/scanTarget';
+
+const { t, locale } = useI18n();
+
+// 响应式选项（computed 包裹以便语言切换时自动更新）
+const statusOptions = computed(() => getStatusOptions());
+const typeOptions = computed(() => getTypeOptions());
+const priorityOptions = computed(() => getPriorityOptions());
+const scheduleTypeOptions = computed(() => getScheduleTypeOptions());
 
 // 响应式数据
 const targets = ref<ScanTarget[]>([]);
@@ -45,14 +54,14 @@ const addForm = reactive<AddScanTargetParams>({
   priority: 5,
   schedule_type: 'once',
   schedule_time: '',
-  created_by: '本地用户'
+  created_by: t('scan_target.local_user')
 });
 
 // 批量添加表单
 const batchForm = reactive<BatchAddScanTargetsParams>({
   targets: [],
   target_type: 'single',
-  created_by: '本地用户'
+  created_by: t('scan_target.local_user')
 });
 
 // 弹框状态
@@ -179,17 +188,17 @@ const addTarget = async () => {
   try {
     const result = await window.go.main.App.AddScanTarget(addForm);
     if (result.error) {
-      alert('添加失败: ' + result.error);
+      alert(t('scan_target.add_failed', { error: result.error }));
       return;
     }
-    
+
     showAddDialog.value = false;
     resetAddForm();
     await loadTargets();
     await loadStatistics();
   } catch (error) {
     console.error('添加目标失败:', error);
-    alert('添加失败: ' + error);
+    alert(t('scan_target.add_failed', { error }));
   }
 };
 
@@ -197,51 +206,51 @@ const batchAddTargets = async () => {
   const targetList = batchTargetsText.value.split('\n')
     .map(line => line.trim())
     .filter(line => line.length > 0);
-  
+
   if (targetList.length === 0) {
-    alert('请输入目标列表');
+    alert(t('scan_target.enter_target_list'));
     return;
   }
-  
+
   try {
     const result = await window.go.main.App.BatchAddScanTargets(
       targetList,
       batchForm.target_type,
       batchForm.created_by
     );
-    
+
     if (result.error) {
-      alert('批量添加失败: ' + result.error);
+      alert(t('scan_target.batch_add_failed', { error: result.error }));
       return;
     }
-    
+
     showBatchDialog.value = false;
     resetBatchForm();
     await loadTargets();
     await loadStatistics();
   } catch (error) {
     console.error('批量添加失败:', error);
-    alert('批量添加失败: ' + error);
+    alert(t('scan_target.batch_add_failed', { error }));
   }
 };
 
 const deleteTarget = async (target: ScanTarget) => {
-  if (!confirm(`确定要删除扫描目标 "${target.name}" 吗？`)) {
+  if (!confirm(t('scan_target.confirm_delete', { name: target.name }))) {
     return;
   }
-  
+
   try {
     const result = await window.go.main.App.DeleteScanTarget(target.id);
     if (result.error) {
-      alert('删除失败: ' + result.error);
+      alert(t('scan_target.delete_failed', { error: result.error }));
       return;
     }
-    
+
     await loadTargets();
     await loadStatistics();
   } catch (error) {
     console.error('删除目标失败:', error);
-    alert('删除失败: ' + error);
+    alert(t('scan_target.delete_failed', { error }));
   }
 };
 
@@ -249,14 +258,14 @@ const updateTargetStatus = async (target: ScanTarget, status: ScanTargetStatus) 
   try {
     const result = await window.go.main.App.UpdateScanTargetStatus(target.id, status, '');
     if (result.error) {
-      alert('更新状态失败: ' + result.error);
+      alert(t('scan_target.update_status_failed', { error: result.error }));
       return;
     }
-    
+
     await loadTargets();
   } catch (error) {
     console.error('更新状态失败:', error);
-    alert('更新状态失败: ' + error);
+    alert(t('scan_target.update_status_failed', { error }));
   }
 };
 
@@ -264,14 +273,14 @@ const startScheduler = async () => {
   try {
     const result = await window.go.main.App.StartScheduler();
     if (result.error) {
-      alert('启动调度器失败: ' + result.error);
+      alert(t('scan_target.start_scheduler_failed', { error: result.error }));
       return;
     }
-    
+
     await loadSchedulerStatus();
   } catch (error) {
     console.error('启动调度器失败:', error);
-    alert('启动调度器失败: ' + error);
+    alert(t('scan_target.start_scheduler_failed', { error }));
   }
 };
 
@@ -279,14 +288,14 @@ const stopScheduler = async () => {
   try {
     const result = await window.go.main.App.StopScheduler();
     if (result.error) {
-      alert('停止调度器失败: ' + result.error);
+      alert(t('scan_target.stop_scheduler_failed', { error: result.error }));
       return;
     }
-    
+
     await loadSchedulerStatus();
   } catch (error) {
     console.error('停止调度器失败:', error);
-    alert('停止调度器失败: ' + error);
+    alert(t('scan_target.stop_scheduler_failed', { error }));
   }
 };
 
@@ -304,7 +313,7 @@ const resetAddForm = () => {
     priority: 5,
     schedule_type: 'once',
     schedule_time: '',
-    created_by: '本地用户'
+    created_by: t('scan_target.local_user')
   });
 };
 
@@ -312,20 +321,20 @@ const resetBatchForm = () => {
   Object.assign(batchForm, {
     targets: [],
     target_type: 'single',
-    created_by: '本地用户'
+    created_by: t('scan_target.local_user')
   });
   batchTargetsText.value = '';
 };
 
 const formatDuration = (seconds: number): string => {
-  if (seconds < 60) return `${seconds}秒`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}分${seconds % 60}秒`;
-  return `${Math.floor(seconds / 3600)}时${Math.floor((seconds % 3600) / 60)}分`;
+  if (seconds < 60) return t('scan_target.duration.seconds', { n: seconds });
+  if (seconds < 3600) return t('scan_target.duration.minutes', { m: Math.floor(seconds / 60), s: seconds % 60 });
+  return t('scan_target.duration.hours', { h: Math.floor(seconds / 3600), m: Math.floor((seconds % 3600) / 60) });
 };
 
 const formatDateTime = (dateStr: string): string => {
   if (!dateStr) return '-';
-  return new Date(dateStr).toLocaleString('zh-CN');
+  return new Date(dateStr).toLocaleString(locale.value === 'zh' ? 'zh-CN' : 'en-US');
 };
 
 const getStatusColor = (status: ScanTargetStatus): string => {
@@ -333,11 +342,11 @@ const getStatusColor = (status: ScanTargetStatus): string => {
 };
 
 const getStatusText = (status: ScanTargetStatus): string => {
-  return STATUS_TEXT_MAP[status] || status;
+  return getStatusTextMap(status);
 };
 
 const getTypeText = (type: ScanTargetType): string => {
-  return TYPE_TEXT_MAP[type] || type;
+  return getTypeTextMap(type);
 };
 
 // 生命周期
@@ -360,12 +369,12 @@ onMounted(async () => {
     <div class="header-toolbar border-b border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">扫描目标管理</h2>
-          
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ t('scan_target.title') }}</h2>
+
           <!-- 统计信息 -->
           <div v-if="statistics" class="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
-            <span>总计: {{ statistics.total }}</span>
-            <span>今日: {{ statistics.today }}</span>
+            <span>{{ t('scan_target.total', { count: statistics.total }) }}</span>
+            <span>{{ t('scan_target.today', { count: statistics.today }) }}</span>
           </div>
         </div>
         
@@ -380,7 +389,7 @@ onMounted(async () => {
                 ]"
               ></div>
               <span class="text-sm text-gray-600 dark:text-gray-300">
-                调度器: {{ schedulerStatus.running ? '运行中' : '已停止' }}
+                {{ t('scan_target.scheduler') }}: {{ schedulerStatus.running ? t('scan_target.scheduler_running') : t('scan_target.scheduler_stopped') }}
               </span>
             </div>
             <button
@@ -392,7 +401,7 @@ onMounted(async () => {
                   : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200'
               ]"
             >
-              {{ schedulerStatus.running ? '停止' : '启动' }}
+              {{ schedulerStatus.running ? t('scan_target.stop_scheduler') : t('scan_target.start_scheduler') }}
             </button>
           </div>
           
@@ -402,7 +411,7 @@ onMounted(async () => {
             class="btn btn-primary"
           >
             <i class="bx bx-plus mr-1"></i>
-            添加目标
+            {{ t('scan_target.add_target') }}
           </button>
           
           <button
@@ -410,7 +419,7 @@ onMounted(async () => {
             class="btn btn-secondary"
           >
             <i class="bx bx-list-plus mr-1"></i>
-            批量添加
+            {{ t('scan_target.batch_add') }}
           </button>
           
           <button
@@ -426,40 +435,40 @@ onMounted(async () => {
       <!-- 筛选条件 -->
       <div class="mt-4 flex items-center space-x-4">
         <div class="flex items-center space-x-2">
-          <label class="text-sm text-gray-600 dark:text-gray-300">状态:</label>
+          <label class="text-sm text-gray-600 dark:text-gray-300">{{ t('scan_target.filter.status') }}</label>
           <select
             v-model="queryParams.status"
             @change="loadTargets()"
             class="form-select"
           >
-            <option value="">全部</option>
-            <option v-for="option in STATUS_OPTIONS" :key="option.value" :value="option.value">
+            <option value="">{{ t('scan_target.filter.all') }}</option>
+            <option v-for="option in statusOptions" :key="option.value" :value="option.value">
               {{ option.label }}
             </option>
           </select>
         </div>
-        
+
         <div class="flex items-center space-x-2">
-          <label class="text-sm text-gray-600 dark:text-gray-300">类型:</label>
+          <label class="text-sm text-gray-600 dark:text-gray-300">{{ t('scan_target.filter.type') }}</label>
           <select
             v-model="queryParams.type"
             @change="loadTargets()"
             class="form-select"
           >
-            <option value="">全部</option>
-            <option v-for="option in TYPE_OPTIONS" :key="option.value" :value="option.value">
+            <option value="">{{ t('scan_target.filter.all') }}</option>
+            <option v-for="option in typeOptions" :key="option.value" :value="option.value">
               {{ option.label }}
             </option>
           </select>
         </div>
-        
+
         <div class="flex items-center space-x-2 flex-1">
-          <label class="text-sm text-gray-600 dark:text-gray-300">搜索:</label>
+          <label class="text-sm text-gray-600 dark:text-gray-300">{{ t('scan_target.filter.search') }}</label>
           <input
             v-model="queryParams.search"
             @input="loadTargets()"
             type="text"
-            placeholder="搜索目标名称或地址..."
+            :placeholder="t('scan_target.filter.search_placeholder')"
             class="form-input flex-1"
           >
         </div>
@@ -475,9 +484,9 @@ onMounted(async () => {
       <div v-else-if="paginatedTargets.length === 0" class="empty-state">
         <div class="text-center py-12">
           <i class="bx bx-target-lock text-4xl text-gray-400 mb-4"></i>
-          <p class="text-gray-500 dark:text-gray-400 mb-4">暂无扫描目标</p>
+          <p class="text-gray-500 dark:text-gray-400 mb-4">{{ t('scan_target.no_targets') }}</p>
           <button @click="showAddDialog = true" class="btn btn-primary">
-            添加第一个目标
+            {{ t('scan_target.add_first_target') }}
           </button>
         </div>
       </div>
@@ -509,7 +518,7 @@ onMounted(async () => {
                 </span>
                 
                 <span v-if="target.priority >= 8" class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 ml-2">
-                  高优先级
+                  {{ t('scan_target.high_priority') }}
                 </span>
               </div>
               
@@ -535,7 +544,7 @@ onMounted(async () => {
               <!-- 进度条（运行中时显示） -->
               <div v-if="target.status === 'running'" class="mt-2">
                 <div class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
-                  <span>扫描进度</span>
+                  <span>{{ t('scan_target.scan_progress') }}</span>
                   <span>{{ target.progress }}%</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
@@ -549,19 +558,19 @@ onMounted(async () => {
               <!-- 统计信息（已完成时显示） -->
               <div v-if="target.status === 'completed'" class="mt-2 grid grid-cols-4 gap-4 text-xs">
                 <div class="text-center">
-                  <div class="text-gray-500 dark:text-gray-400">主机</div>
+                  <div class="text-gray-500 dark:text-gray-400">{{ t('scan_target.hosts') }}</div>
                   <div class="font-medium text-gray-900 dark:text-white">{{ target.found_hosts }}</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-gray-500 dark:text-gray-400">端口</div>
+                  <div class="text-gray-500 dark:text-gray-400">{{ t('scan_target.ports') }}</div>
                   <div class="font-medium text-gray-900 dark:text-white">{{ target.found_ports }}</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-gray-500 dark:text-gray-400">漏洞</div>
+                  <div class="text-gray-500 dark:text-gray-400">{{ t('scan_target.vulns') }}</div>
                   <div class="font-medium text-red-600 dark:text-red-400">{{ target.found_vulns }}</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-gray-500 dark:text-gray-400">目录</div>
+                  <div class="text-gray-500 dark:text-gray-400">{{ t('scan_target.dirs') }}</div>
                   <div class="font-medium text-gray-900 dark:text-white">{{ target.found_dirs }}</div>
                 </div>
               </div>
@@ -573,33 +582,33 @@ onMounted(async () => {
                 v-if="target.status === 'pending'"
                 @click="updateTargetStatus(target, 'running')"
                 class="btn-icon btn-icon-sm text-green-600 hover:bg-green-100 dark:hover:bg-green-900"
-                title="开始扫描"
+                :title="t('scan_target.start_scan')"
               >
                 <i class="bx bx-play"></i>
               </button>
-              
+
               <button
                 v-if="target.status === 'running'"
                 @click="updateTargetStatus(target, 'paused')"
                 class="btn-icon btn-icon-sm text-yellow-600 hover:bg-yellow-100 dark:hover:bg-yellow-900"
-                title="暂停扫描"
+                :title="t('scan_target.pause_scan')"
               >
                 <i class="bx bx-pause"></i>
               </button>
-              
+
               <button
                 v-if="target.status === 'failed'"
                 @click="updateTargetStatus(target, 'pending')"
                 class="btn-icon btn-icon-sm text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900"
-                title="重新扫描"
+                :title="t('scan_target.retry_scan')"
               >
                 <i class="bx bx-refresh"></i>
               </button>
-              
+
               <button
                 @click="deleteTarget(target)"
                 class="btn-icon btn-icon-sm text-red-600 hover:bg-red-100 dark:hover:bg-red-900"
-                title="删除"
+                :title="t('common.actions.delete')"
               >
                 <i class="bx bx-trash"></i>
               </button>
@@ -613,7 +622,7 @@ onMounted(async () => {
     <div v-if="total > queryParams.limit" class="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-700 dark:text-gray-300">
-          显示 {{ queryParams.offset + 1 }} 到 {{ Math.min(queryParams.offset + queryParams.limit, total) }} 项，共 {{ total }} 项
+          {{ t('scan_target.pagination.showing', { from: queryParams.offset + 1, to: Math.min(queryParams.offset + queryParams.limit, total), total }) }}
         </div>
         <div class="flex items-center space-x-2">
           <button
@@ -621,14 +630,14 @@ onMounted(async () => {
             :disabled="queryParams.offset === 0"
             class="btn btn-secondary btn-sm"
           >
-            上一页
+            {{ t('scan_target.pagination.prev') }}
           </button>
           <button
             @click="queryParams.offset += queryParams.limit; loadTargets()"
             :disabled="queryParams.offset + queryParams.limit >= total"
             class="btn btn-secondary btn-sm"
           >
-            下一页
+            {{ t('scan_target.pagination.next') }}
           </button>
         </div>
       </div>
@@ -638,66 +647,66 @@ onMounted(async () => {
     <div v-if="showAddDialog" class="dialog-overlay" @click.self="showAddDialog = false">
       <div class="dialog">
         <div class="dialog-header">
-          <h3>添加扫描目标</h3>
+          <h3>{{ t('scan_target.dialog.add_title') }}</h3>
           <button @click="showAddDialog = false" class="btn-icon">
             <i class="bx bx-x"></i>
           </button>
         </div>
-        
+
         <div class="dialog-body">
           <form @submit.prevent="addTarget" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="form-label">目标名称 *</label>
-                <input v-model="addForm.name" type="text" required class="form-input" placeholder="输入目标名称">
+                <label class="form-label">{{ t('scan_target.dialog.target_name') }}</label>
+                <input v-model="addForm.name" type="text" required class="form-input" :placeholder="t('scan_target.dialog.target_name_placeholder')">
               </div>
               <div>
-                <label class="form-label">目标类型 *</label>
+                <label class="form-label">{{ t('scan_target.dialog.target_type') }}</label>
                 <select v-model="addForm.type" required class="form-select">
-                  <option v-for="option in TYPE_OPTIONS" :key="option.value" :value="option.value">
+                  <option v-for="option in typeOptions" :key="option.value" :value="option.value">
                     {{ option.label }}
                   </option>
                 </select>
               </div>
             </div>
-            
+
             <div>
-              <label class="form-label">目标地址 *</label>
-              <input v-model="addForm.target" type="text" required class="form-input" 
-                     placeholder="输入URL、域名、IP地址或CIDR">
+              <label class="form-label">{{ t('scan_target.dialog.target_address') }}</label>
+              <input v-model="addForm.target" type="text" required class="form-input"
+                     :placeholder="t('scan_target.dialog.target_address_placeholder')">
             </div>
-            
+
             <div>
-              <label class="form-label">描述</label>
-              <textarea spellcheck="false" v-model="addForm.description" class="form-input" rows="3" 
-                        placeholder="输入目标描述"></textarea>
+              <label class="form-label">{{ t('scan_target.dialog.description') }}</label>
+              <textarea spellcheck="false" v-model="addForm.description" class="form-input" rows="3"
+                        :placeholder="t('scan_target.dialog.description_placeholder')"></textarea>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="form-label">优先级</label>
+                <label class="form-label">{{ t('scan_target.dialog.priority') }}</label>
                 <select v-model="addForm.priority" class="form-select">
-                  <option v-for="option in PRIORITY_OPTIONS" :key="option.value" :value="option.value">
+                  <option v-for="option in priorityOptions" :key="option.value" :value="option.value">
                     {{ option.label }}
                   </option>
                 </select>
               </div>
               <div>
-                <label class="form-label">调度类型</label>
+                <label class="form-label">{{ t('scan_target.dialog.schedule_type') }}</label>
                 <select v-model="addForm.schedule_type" class="form-select">
-                  <option v-for="option in SCHEDULE_TYPE_OPTIONS" :key="option.value" :value="option.value">
+                  <option v-for="option in scheduleTypeOptions" :key="option.value" :value="option.value">
                     {{ option.label }}
                   </option>
                 </select>
               </div>
             </div>
-            
+
             <div class="dialog-footer">
               <button type="button" @click="showAddDialog = false" class="btn btn-secondary">
-                取消
+                {{ t('common.actions.cancel') }}
               </button>
               <button type="submit" class="btn btn-primary">
-                添加
+                {{ t('common.actions.add') }}
               </button>
             </div>
           </form>
@@ -709,41 +718,41 @@ onMounted(async () => {
     <div v-if="showBatchDialog" class="dialog-overlay" @click.self="showBatchDialog = false">
       <div class="dialog">
         <div class="dialog-header">
-          <h3>批量添加扫描目标</h3>
+          <h3>{{ t('scan_target.dialog.batch_title') }}</h3>
           <button @click="showBatchDialog = false" class="btn-icon">
             <i class="bx bx-x"></i>
           </button>
         </div>
-        
+
         <div class="dialog-body">
           <form @submit.prevent="batchAddTargets" class="space-y-4">
             <div>
-              <label class="form-label">目标类型 *</label>
+              <label class="form-label">{{ t('scan_target.dialog.target_type') }}</label>
               <select v-model="batchForm.target_type" required class="form-select">
-                <option v-for="option in TYPE_OPTIONS" :key="option.value" :value="option.value">
+                <option v-for="option in typeOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </option>
               </select>
             </div>
-            
+
             <div>
-              <label class="form-label">目标列表 *</label>
+              <label class="form-label">{{ t('scan_target.dialog.target_list') }}</label>
               <textarea spellcheck="false"
                 v-model="batchTargetsText"
                 required
                 class="form-input"
                 rows="10"
-                placeholder="每行一个目标，例如：&#10;https://example.com&#10;192.168.1.1&#10;10.0.0.0/24"
+                :placeholder="t('scan_target.dialog.target_list_placeholder')"
               ></textarea>
-              <p class="text-xs text-gray-500 mt-1">每行输入一个目标地址</p>
+              <p class="text-xs text-gray-500 mt-1">{{ t('scan_target.dialog.target_list_hint') }}</p>
             </div>
-            
+
             <div class="dialog-footer">
               <button type="button" @click="showBatchDialog = false" class="btn btn-secondary">
-                取消
+                {{ t('common.actions.cancel') }}
               </button>
               <button type="submit" class="btn btn-primary">
-                批量添加
+                {{ t('scan_target.dialog.batch_add_btn') }}
               </button>
             </div>
           </form>
@@ -755,97 +764,97 @@ onMounted(async () => {
     <div v-if="showDetailDialog && selectedTarget" class="dialog-overlay" @click.self="showDetailDialog = false">
       <div class="dialog dialog-lg">
         <div class="dialog-header">
-          <h3>扫描目标详情</h3>
+          <h3>{{ t('scan_target.dialog.detail_title') }}</h3>
           <button @click="showDetailDialog = false" class="btn-icon">
             <i class="bx bx-x"></i>
           </button>
         </div>
-        
+
         <div class="dialog-body">
           <div class="space-y-6">
             <!-- 基本信息 -->
             <div class="grid grid-cols-2 gap-6">
               <div>
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">基本信息</h4>
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">{{ t('scan_target.detail.basic_info') }}</h4>
                 <div class="space-y-2 text-sm">
                   <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">名称:</span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ t('scan_target.detail.name') }}</span>
                     <span class="text-gray-900 dark:text-white">{{ selectedTarget.name }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">类型:</span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ t('scan_target.detail.type') }}</span>
                     <span class="text-gray-900 dark:text-white">{{ getTypeText(selectedTarget.type) }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">状态:</span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ t('scan_target.detail.status') }}</span>
                     <span :class="`text-${getStatusColor(selectedTarget.status)}-600`">
                       {{ getStatusText(selectedTarget.status) }}
                     </span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">优先级:</span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ t('scan_target.detail.priority') }}</span>
                     <span class="text-gray-900 dark:text-white">{{ selectedTarget.priority }}</span>
                   </div>
                 </div>
               </div>
-              
+
               <div>
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">执行信息</h4>
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">{{ t('scan_target.detail.execution_info') }}</h4>
                 <div class="space-y-2 text-sm">
                   <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">开始时间:</span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ t('scan_target.detail.start_time') }}</span>
                     <span class="text-gray-900 dark:text-white">{{ formatDateTime(selectedTarget.started_at || '') }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">完成时间:</span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ t('scan_target.detail.end_time') }}</span>
                     <span class="text-gray-900 dark:text-white">{{ formatDateTime(selectedTarget.completed_at || '') }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">持续时间:</span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ t('scan_target.detail.duration') }}</span>
                     <span class="text-gray-900 dark:text-white">{{ formatDuration(selectedTarget.duration) }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">进度:</span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ t('scan_target.detail.progress') }}</span>
                     <span class="text-gray-900 dark:text-white">{{ selectedTarget.progress }}%</span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <!-- 目标地址 -->
             <div>
-              <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">目标地址</h4>
+              <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">{{ t('scan_target.detail.target_address') }}</h4>
               <p class="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-3 rounded">
                 {{ selectedTarget.target }}
               </p>
             </div>
-            
+
             <!-- 扫描结果统计 -->
             <div v-if="selectedTarget.status === 'completed'">
-              <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">扫描结果</h4>
+              <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">{{ t('scan_target.detail.scan_results') }}</h4>
               <div class="grid grid-cols-4 gap-4">
                 <div class="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
                   <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ selectedTarget.found_hosts }}</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">发现主机</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('scan_target.found_hosts') }}</div>
                 </div>
                 <div class="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
                   <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ selectedTarget.found_ports }}</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">开放端口</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('scan_target.found_ports') }}</div>
                 </div>
                 <div class="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
                   <div class="text-2xl font-bold text-red-600 dark:text-red-400">{{ selectedTarget.found_vulns }}</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">发现漏洞</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('scan_target.found_vulns') }}</div>
                 </div>
                 <div class="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
                   <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ selectedTarget.found_dirs }}</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">发现目录</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('scan_target.found_dirs') }}</div>
                 </div>
               </div>
             </div>
-            
+
             <!-- 错误信息 -->
             <div v-if="selectedTarget.error_message">
-              <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">错误信息</h4>
+              <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">{{ t('scan_target.detail.error_info') }}</h4>
               <p class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded">
                 {{ selectedTarget.error_message }}
               </p>

@@ -120,7 +120,7 @@ const handleNotify = (notification: { message: string; type: 'success' | 'error'
         @click="showFilterModal = !showFilterModal"
       >
         <i class="bx bx-filter text-xs"></i> 
-        <span class="text-xs">Filter</span>
+        <span class="text-xs">{{ t('modules.proxy.control.filter') }}</span>
       </button>
       
       <!-- 清除按钮 -->
@@ -129,17 +129,17 @@ const handleNotify = (notification: { message: string; type: 'success' | 'error'
         @click="clearHistory"
       >
         <i class="bx bx-trash text-xs"></i>
-        <span class="text-xs">Clear</span>
+        <span class="text-xs">{{ t('modules.proxy.control.clear') }}</span>
       </button>
       
       <!-- 发送到... 按钮组 -->
       <div class="flex items-center px-1.5 rounded-md bg-gradient-to-r from-gray-50 to-gray-100 dark:from-[#292945] dark:to-[#2d2d4d] border border-gray-200 dark:border-gray-700">
         <i class="bx bx-send text-indigo-500 dark:text-indigo-400 mr-0.5 text-xs"></i>
-        <span class="text-xs font-medium text-gray-700 dark:text-gray-300 mr-0.5">Send to:</span>
+        <span class="text-xs font-medium text-gray-700 dark:text-gray-300 mr-0.5">{{ t('modules.proxy.control.send_to') }}</span>
         <button 
           class="btn btn-xs px-1 py-0.5 bg-transparent hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-medium rounded"
           @click="sendToRepeater"
-          title="Send to Repeater (Ctrl+R)"
+          :title="t('modules.proxy.control.send_to_repeater_tooltip')"
         >
           Repeater
         </button>
@@ -147,7 +147,7 @@ const handleNotify = (notification: { message: string; type: 'success' | 'error'
         <button 
           class="btn btn-xs px-1 py-0.5 bg-transparent hover:bg-orange-50 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-medium rounded"
           @click="sendToIntruder"
-          title="Send to Intruder (Ctrl+I)"
+          :title="t('modules.proxy.control.send_to_intruder_tooltip')"
         >
           Intruder
         </button>

@@ -1,4 +1,5 @@
 import { ref, nextTick, toRef, type Ref } from 'vue';
+import { i18n } from '@/i18n';
 
 // 通用Tab类型，包含Repeater和Intruder标签页的共同属性
 export interface BaseTab {
@@ -263,15 +264,15 @@ export function useTabsManagement<T extends BaseTab, G extends TabGroup = TabGro
     if (opts.enableGroups && emitChangeTabGroup && emitCreateGroup) {
       html += `
         <div class="menu-section">
-          <div class="menu-header">分组</div>
+          <div class="menu-header">${i18n.global.t('common.tabs.group')}</div>
           <div class="menu-item create-group">
             <i class="bx bx-folder-plus menu-icon" style="color: var(--color-primary, #4f46e5);"></i>
-            <span class="menu-text">创建新分组</span>
+            <span class="menu-text">${i18n.global.t('common.tabs.create_new_group')}</span>
           </div>
           <div class="menu-divider"></div>
           <div class="menu-item change-group" data-group="">
             <i class="bx bx-x-circle menu-icon" style="color: var(--color-text-tertiary, #6b7280);"></i>
-            <span class="menu-text">无分组</span>
+            <span class="menu-text">${i18n.global.t('common.tabs.no_group')}</span>
           </div>
       `;
 
@@ -292,7 +293,7 @@ export function useTabsManagement<T extends BaseTab, G extends TabGroup = TabGro
         <div class="menu-section">
       `;
     }
-    html += `<div class="menu-header">颜色</div>`;
+    html += `<div class="menu-header">${i18n.global.t('common.tabs.color')}</div>`;
     
     // 添加所有颜色选项
     opts.colorOptions.forEach(color => {

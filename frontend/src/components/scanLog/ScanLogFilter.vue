@@ -125,7 +125,7 @@ const activeFiltersCount = computed(() => {
   <div class="filter-container scrollbar-thin">
     <!-- 过滤器标题 -->
     <div class="filter-header">
-      <h3>{{ t('scanLog.filter.title', '过滤器') }}</h3>
+      <h3>{{ t('scanLog.filter.title') }}</h3>
       <div class="filter-actions">
         <span v-if="activeFiltersCount > 0" class="active-count">
           {{ activeFiltersCount }}
@@ -133,7 +133,7 @@ const activeFiltersCount = computed(() => {
         <button
           @click="clearAllFilters"
           class="btn-icon"
-          :title="t('common.clear', '清空')"
+          :title="t('common.clear')"
         >
           <i class="bx bx-trash"></i>
         </button>
@@ -142,12 +142,12 @@ const activeFiltersCount = computed(() => {
 
     <!-- 搜索框 -->
     <div class="form-group spacing-sm">
-      <label>{{ t('scanLog.filter.search', '搜索关键词') }}</label>
+      <label>{{ t('scanLog.filter.search') }}</label>
       <input
         v-model="localFilter.searchKeyword"
         @input="updateSearchKeyword"
         type="text"
-        placeholder="搜索URL、模块、漏洞类型等..."
+        :placeholder="t('scanLog.filter.search_placeholder')"
         class="filter-input"
         spellcheck="false"
       />
@@ -155,7 +155,7 @@ const activeFiltersCount = computed(() => {
 
     <!-- 目标主机过滤 -->
     <div class="form-group spacing-sm">
-      <label>{{ t('scanLog.filter.targetHost', '目标主机') }}</label>
+      <label>{{ t('scanLog.filter.targetHost') }}</label>
       <input
         v-model="localFilter.targetHost"
         @input="updateTargetHost"
@@ -168,7 +168,7 @@ const activeFiltersCount = computed(() => {
 
     <!-- 模块类型过滤 -->
     <div class="form-group spacing-sm">
-      <label>{{ t('scanLog.filter.moduleTypes', '扫描模块') }}</label>
+      <label>{{ t('scanLog.filter.moduleTypes') }}</label>
       <div class="checkbox-list">
         <div
           v-for="option in moduleTypeOptions"

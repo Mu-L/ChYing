@@ -33,29 +33,29 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 // 默认预设
-const defaultPresets = [
+const defaultPresets = computed(() => [
   {
-    name: '安全工具',
+    name: t('common.color_picker.security_tools'),
     colors: [
-      { id: 'danger', color: '#ef4444', name: '危险' },
-      { id: 'warning', color: '#f59e0b', name: '警告' },
-      { id: 'success', color: '#10b981', name: '安全' },
-      { id: 'info', color: '#3b82f6', name: '信息' }
+      { id: 'danger', color: '#ef4444', name: t('common.color_picker.danger') },
+      { id: 'warning', color: '#f59e0b', name: t('common.color_picker.warning') },
+      { id: 'success', color: '#10b981', name: t('common.color_picker.safe') },
+      { id: 'info', color: '#3b82f6', name: t('common.color_picker.info') }
     ]
   },
   {
-    name: '流量标记',
+    name: t('common.color_picker.traffic_markers'),
     colors: [
-      { id: 'auth', color: '#6366f1', name: '认证' },
+      { id: 'auth', color: '#6366f1', name: t('common.color_picker.authentication') },
       { id: 'api', color: '#8b5cf6', name: 'API' },
-      { id: 'static', color: '#a3a3a3', name: '静态' },
-      { id: 'sensitive', color: '#f43f5e', name: '敏感' }
+      { id: 'static', color: '#a3a3a3', name: t('common.color_picker.static') },
+      { id: 'sensitive', color: '#f43f5e', name: t('common.color_picker.sensitive') }
     ]
   }
-];
+]);
 
 // 使用传入的预设或默认预设
-const effectivePresets = computed(() => props.presets || defaultPresets);
+const effectivePresets = computed(() => props.presets || defaultPresets.value);
 
 // 历史记录
 const colorHistory = ref<ColorOption[]>([]);

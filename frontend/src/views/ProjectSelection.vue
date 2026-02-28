@@ -87,7 +87,7 @@ const loadLocalProjects = async () => {
     }
   } catch (err) {
     console.error('加载本地项目失败:', err);
-    showMessage('加载本地项目失败: ' + (err as Error).message, 'error');
+    showMessage(t('pages.project.load_failed') + ': ' + (err as Error).message, 'error');
   }
 };
 
@@ -195,7 +195,7 @@ async function handleNext() {
   
   try {
     isLoading.value = true;
-    updateProgressStep(0, '准备开始...');
+    updateProgressStep(0, t('pages.project.init_preparing'));
 
     switch (projectAction.value) {
       case 'temp':
@@ -214,19 +214,19 @@ async function handleNext() {
         break;
     }
 
-    await callInitStep(StartInitialization, [finalProjectType, finalProjectName], "正在启动初始化...", 15);
-    await callInitStep(StepBasicInitialization, [], "正在初始化基础组件...", 25);
-    await callInitStep(StepConfigurationLoad, [], "正在加载配置文件...", 35);
-    await callInitStep(StepDatabaseConnection, [finalProjectName], "正在连接数据库...", 50);
-    await callInitStep(StepSchemaValidation, [], "正在验证数据库模式...", 65);
-    await callInitStep(StepProxyServerStart, [], "正在启动代理服务器...", 80);
-    await callInitStep(StepProjectDataLoad, [finalProjectType, finalProjectName], "正在加载项目数据...", 90);
-    await callInitStep(StepInitializationComplete, [], "正在完成初始化...", 100);
+    await callInitStep(StartInitialization, [finalProjectType, finalProjectName], t('pages.project.init_starting'), 15);
+    await callInitStep(StepBasicInitialization, [], t('pages.project.init_base_components'), 25);
+    await callInitStep(StepConfigurationLoad, [], t('pages.project.init_loading_config'), 35);
+    await callInitStep(StepDatabaseConnection, [finalProjectName], t('pages.project.init_connecting_db'), 50);
+    await callInitStep(StepSchemaValidation, [], t('pages.project.init_verifying_schema'), 65);
+    await callInitStep(StepProxyServerStart, [], t('pages.project.init_starting_proxy'), 80);
+    await callInitStep(StepProjectDataLoad, [finalProjectType, finalProjectName], t('pages.project.init_loading_data'), 90);
+    await callInitStep(StepInitializationComplete, [], t('pages.project.init_completing'), 100);
     
     const projectResult = await GetProject();
 
     setTimeout(() => {
-      updateProgressStep(100, '初始化完成，正在跳转...');
+      updateProgressStep(100, t('pages.project.init_done'));
       setTimeout(() => {
         isLoading.value = false;
         router.push('/app/project');
@@ -259,8 +259,8 @@ onUnmounted(() => {
       <div class="loading-container">
         <!-- 主标题 -->
         <div class="loading-title">
-          <h3 class="text-xl font-semibold text-white mb-2">承影 正在启动</h3>
-          <p class="text-gray-300 text-sm mb-6">请稍候，正在为您准备安全测试环境...</p>
+          <h3 class="text-xl font-semibold text-white mb-2">{{ t('pages.project.app_starting') }}</h3>
+          <p class="text-gray-300 text-sm mb-6">{{ t('pages.project.app_starting_desc') }}</p>
         </div>
         
         <!-- 进度条容器 -->
@@ -398,7 +398,7 @@ onUnmounted(() => {
       <!-- 紧凑的页面标题 -->
       <div class="compact-header">
         <div class="brand-container">
-          <h1 class="brand-title">承影</h1>
+          <h1 class="brand-title">{{ t('layout.app.title') }}</h1>
         </div>
 
         <!-- 引言卡片 -->
@@ -406,8 +406,8 @@ onUnmounted(() => {
           <div class="quote-icon">
             <i class="fas fa-quote-left"></i>
           </div>
-          <p class="quote-text">将旦昧爽之交，日夕昏明之际，北面而察之，淡淡焉若有物存，莫识其状。其所触也，窃窃然有声，经物而物不疾也。</p>
-          <div class="quote-author">—— 《列子·汤问》</div>
+          <p class="quote-text">{{ t('pages.project.literary_quote') }}</p>
+          <div class="quote-author">{{ t('pages.project.literary_source') }}</div>
         </div>
       </div>
 
@@ -416,8 +416,8 @@ onUnmounted(() => {
         <!-- 左侧面板：项目操作 -->
         <div class="left-panel">
           <div class="panel-header">
-            <h3>项目操作</h3>
-            <p>选择要执行的操作</p>
+            <h3>{{ t('pages.project.project_actions') }}</h3>
+            <p>{{ t('pages.project.select_action') }}</p>
           </div>
 
           <div class="action-selector-compact">
@@ -429,8 +429,8 @@ onUnmounted(() => {
                 </svg>
               </div>
               <div class="action-info-compact">
-                <h4>打开现有项目</h4>
-                <p>从已有项目中选择</p>
+                <h4>{{ t('pages.project.open_existing') }}</h4>
+                <p>{{ t('pages.project.open_existing_desc') }}</p>
               </div>
               <div class="action-radio">
                 <div class="radio-button" :class="{ checked: projectAction === 'open' }"></div>
@@ -445,8 +445,8 @@ onUnmounted(() => {
                 </svg>
               </div>
               <div class="action-info-compact">
-                <h4>创建新项目</h4>
-                <p>创建全新的项目</p>
+                <h4>{{ t('pages.project.create_new') }}</h4>
+                <p>{{ t('pages.project.create_new_desc') }}</p>
               </div>
               <div class="action-radio">
                 <div class="radio-button" :class="{ checked: projectAction === 'new' }"></div>
@@ -460,8 +460,8 @@ onUnmounted(() => {
                 </svg>
               </div>
               <div class="action-info-compact">
-                <h4>启动临时项目</h4>
-                <p>快速启动，自动保存</p>
+                <h4>{{ t('pages.project.start_temp') }}</h4>
+                <p>{{ t('pages.project.start_temp_desc') }}</p>
               </div>
               <div class="action-radio">
                 <div class="radio-button" :class="{ checked: projectAction === 'temp' }"></div>
@@ -476,8 +476,8 @@ onUnmounted(() => {
             <!-- 打开现有项目 -->
             <div v-if="projectAction === 'open'" key="open" class="project-list-compact">
               <div class="details-header">
-                <h3>选择项目</h3>
-                <div class="project-count">{{ localProjects.length }} 个项目</div>
+                <h3>{{ t('pages.project.select_project') }}</h3>
+                <div class="project-count">{{ t('pages.project.project_count', { count: localProjects.length }) }}</div>
               </div>
 
               <div class="project-list-ultra-compact" v-if="localProjects.length > 0">
@@ -494,8 +494,8 @@ onUnmounted(() => {
                   <div class="project-item-info">
                     <div class="project-item-name">{{ project.name }}</div>
                     <div class="project-item-meta">
-                      <span class="project-source local">本地</span>
-                      <span class="project-requests">{{ project.requests?.toLocaleString() || 0 }} 请求</span>
+                      <span class="project-source local">{{ t('pages.project.local_tag') }}</span>
+                      <span class="project-requests">{{ t('pages.project.request_count', { count: project.requests?.toLocaleString() || 0 }) }}</span>
                       <span v-if="project.size_formatted" class="project-size">{{ project.size_formatted }}</span>
                     </div>
                   </div>
@@ -516,28 +516,28 @@ onUnmounted(() => {
 
               <div v-else class="empty-state-compact">
                 <i class="fas fa-folder-open"></i>
-                <h4>没有找到项目</h4>
-                <p>请先创建一个新项目</p>
+                <h4>{{ t('pages.project.no_projects_found') }}</h4>
+                <p>{{ t('pages.project.create_first') }}</p>
               </div>
             </div>
 
             <!-- 创建新项目 -->
             <div v-else-if="projectAction === 'new'" key="new" class="new-project-compact">
               <div class="details-header">
-                <h3>创建新项目</h3>
+                <h3>{{ t('pages.project.create_new_project') }}</h3>
               </div>
               <div class="input-card-compact">
                 <div class="input-header">
                   <i class="fas fa-edit"></i>
-                  <span>项目名称</span>
+                  <span>{{ t('pages.project.project_name_label') }}</span>
                 </div>
                 <input v-model="projectName"
                        type="text"
                        class="project-name-input-compact"
-                       placeholder="请输入新项目名称..."
+                       :placeholder="t('pages.project.project_name_input_placeholder')"
                        @keyup.enter="handleNext" spellcheck="false">
                 <div class="input-hint">
-                  项目名称将用于标识您的测试项目
+                  {{ t('pages.project.project_name_hint') }}
                 </div>
               </div>
             </div>
@@ -545,22 +545,22 @@ onUnmounted(() => {
             <!-- 临时项目 -->
             <div v-else-if="projectAction === 'temp'" key="temp" class="temp-project-compact">
               <div class="details-header">
-                <h3>临时项目说明</h3>
+                <h3>{{ t('pages.project.temp_project_info') }}</h3>
               </div>
               <div class="temp-info-card-compact">
                 <div class="temp-icon">
                   <i class="fas fa-info-circle"></i>
                 </div>
                 <div class="temp-content">
-                  <p>临时项目会自动创建带时间戳的数据库文件，数据会被保存。适合快速测试使用。</p>
+                  <p>{{ t('pages.project.temp_project_desc') }}</p>
                   <div class="temp-features">
                     <div class="feature-item">
                       <i class="fas fa-bolt"></i>
-                      <span>快速启动</span>
+                      <span>{{ t('pages.project.quick_start') }}</span>
                     </div>
                     <div class="feature-item">
                       <i class="fas fa-save"></i>
-                      <span>自动保存</span>
+                      <span>{{ t('pages.project.auto_save') }}</span>
                     </div>
                   </div>
                 </div>
@@ -570,8 +570,8 @@ onUnmounted(() => {
             <!-- 未选择操作时的提示 -->
             <div v-else key="empty" class="empty-state-compact">
               <i class="fas fa-hand-pointer"></i>
-              <h4>请选择操作</h4>
-              <p>从左侧选择要执行的项目操作</p>
+              <h4>{{ t('pages.project.select_action_prompt') }}</h4>
+              <p>{{ t('pages.project.select_action_hint') }}</p>
             </div>
           </Transition>
         </div>

@@ -4,7 +4,8 @@
  * 用于替代原生 confirm()，保持设计一致性
  */
 
-import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
   modelValue: boolean;      // v-model 绑定
@@ -20,15 +21,23 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
-  title: '确认操作',
-  message: '确定要执行此操作吗？',
-  confirmText: '确认',
-  cancelText: '取消',
+  title: '',
+  message: '',
+  confirmText: '',
+  cancelText: '',
   type: 'warning',
   icon: '',
   loading: false,
   closeOnOverlay: true
 });
+
+const { t } = useI18n();
+
+// i18n 默认值
+const displayTitle = computed(() => props.title || t('common.confirm.default_title'));
+const displayMessage = computed(() => props.message || t('common.confirm.default_message'));
+const displayConfirmText = computed(() => props.confirmText || t('common.confirm.default_confirm'));
+const displayCancelText = computed(() => props.cancelText || t('common.confirm.default_cancel'));
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
@@ -122,8 +131,8 @@ onUnmounted(() => {
         @click.self="handleOverlayClick"
         role="dialog"
         aria-modal="true"
-        :aria-labelledby="title ? 'dialog-title' : undefined"
-        :aria-describedby="message ? 'dialog-message' : undefined"
+        :aria-labelledby="displayTitle ? 'dialog-title' : undefined"
+        :aria-describedby="displayMessage ? 'dialog-message' : undefined"
       >
         <div class="confirm-dialog" :class="getTypeClass()">
           <!-- 图标 -->
@@ -132,13 +141,13 @@ onUnmounted(() => {
           </div>
           
           <!-- 标题 -->
-          <h3 v-if="title" id="dialog-title" class="dialog-title">
-            {{ title }}
+          <h3 v-if="displayTitle" id="dialog-title" class="dialog-title">
+            {{ displayTitle }}
           </h3>
-          
+
           <!-- 消息 -->
-          <p v-if="message" id="dialog-message" class="dialog-message">
-            {{ message }}
+          <p v-if="displayMessage" id="dialog-message" class="dialog-message">
+            {{ displayMessage }}
           </p>
           
           <!-- 自定义内容插槽 -->
@@ -153,16 +162,16 @@ onUnmounted(() => {
               @click="handleCancel"
               :disabled="loading"
             >
-              {{ cancelText }}
+              {{ displayCancelText }}
             </button>
-            <button 
+            <button
               class="btn btn-confirm"
               :class="[`btn-${type}`, { 'btn-loading': loading }]"
               @click="handleConfirm"
               :disabled="loading"
             >
               <i v-if="loading" class="bx bx-loader-alt bx-spin"></i>
-              {{ confirmText }}
+              {{ displayConfirmText }}
             </button>
           </div>
         </div>

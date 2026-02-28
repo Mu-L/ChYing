@@ -33,6 +33,7 @@
       "browse": "Browse",
       "next": "Start",
       "action": "Action",
+      "create": "Create",
       "send_to_repeater": "Send to Repeater",
       "send_to_intruder": "Send to Intruder",
       "set_row_color": "Set Row Color",
@@ -91,15 +92,63 @@
     "error": {
       "stack_trace": "Stack Trace",
       "error_boundary_title": "Error in {component}",
-      "error_boundary_message": "Something went wrong. We've been notified and will look into it."
-    }
+      "error_boundary_message": "Something went wrong. We've been notified and will look into it.",
+      "component_fallback": "Component"
+    },
+    "request_response": {
+      "show_raw": "Show Raw",
+      "format_body": "Format Body",
+      "toggle_word_wrap": "Toggle Word Wrap",
+      "copy_response": "Copy Response",
+      "copy_request": "Copy Request",
+      "render_error": "Unable to render this content, please try another view mode"
+    },
+    "color_picker": {
+      "security_tools": "Security Tools",
+      "danger": "Danger",
+      "warning": "Warning",
+      "safe": "Safe",
+      "info": "Info",
+      "traffic_markers": "Traffic Markers",
+      "authentication": "Authentication",
+      "static": "Static",
+      "sensitive": "Sensitive"
+    },
+    "empty_state": {
+      "default_title": "No Data",
+      "default_action": "Refresh"
+    },
+    "confirm": {
+      "default_title": "Confirm Action",
+      "default_message": "Are you sure you want to perform this action?",
+      "default_confirm": "Confirm",
+      "default_cancel": "Cancel"
+    },
+    "tabs": {
+      "expand_group": "Expand Group",
+      "collapse_group": "Collapse Group",
+      "tab_count": "{count} tabs",
+      "group": "Group",
+      "color": "Color",
+      "create_new_group": "Create New Group",
+      "no_group": "No Group"
+    },
+    "custom": "Custom",
+    "presets": "Presets",
+    "history": "History"
   },
   "layout": {
     "app": {
       "title": "ChYing"
     },
     "header": {
-      "title": "Header"
+      "title": "Header",
+      "chrome_launch_failed": "Failed to launch Chrome: ",
+      "chrome_dialog_title": "Launch Chrome Browser",
+      "proxy_address": "Proxy Address",
+      "chrome_proxy_hint": "Chrome will use this proxy address and launch with --ignore-certificate-errors flag",
+      "launching": "Launching...",
+      "launch_chrome": "Launch Chrome"
     },
     "sidebar": {
       "title": "Sidebar"
@@ -109,6 +158,11 @@
       "memory": "Memory",
       "scan_log_title": "Event Logs",
       "system_status": "System Status",
+      "fetching": "Fetching...",
+      "fetch_failed": "Fetch failed",
+      "db_operation_failed": "Database operation failed [{operation}]: {error}",
+      "goroutines": "Goroutines: {count}",
+      "no_details": "No details available",
       "logs": {
         "system_started": "System started",
         "module_loaded": "Module loaded",
@@ -265,7 +319,17 @@
         "select_request": "Select a request to view details",
         "title": "Contents",
         "path": "Path",
-        "requests": "requests"
+        "requests": "requests",
+        "node_type": "Type",
+        "host": "Host",
+        "directory": "Directory",
+        "file": "File",
+        "api_count": "API Count",
+        "internal_ip_count": "Internal IP Count",
+        "subdomain_count": "Subdomain Count",
+        "param_count": "Parameter Count",
+        "ip_info": "IP Information",
+        "fingerprint_info": "Fingerprint Information"
       },
       "site_map": {
         "tab_content": "Site Map tab content will be displayed here.",
@@ -369,7 +433,25 @@
         "search_error": "Query error: {error}",
         "no_results": "No matching results found",
         "results_shown": "Showing {count} matching results",
-        "filter_cleared": "Filter cleared, showing all history"
+        "filter_cleared": "Filter cleared, showing all history",
+        "default_find_success": "Find all successful requests",
+        "default_find_api": "Find API paths",
+        "default_find_post": "Find POST requests",
+        "status_200": "Status 200",
+        "method_get": "GET method",
+        "method_post": "POST method",
+        "json_type": "JSON type",
+        "enter_match_value": "Enter match value...",
+        "previous_search": "Previous search",
+        "unbalanced_quotes": "Unbalanced quotes",
+        "field_status_reason": "Status reason"
+      },
+      "control": {
+        "filter": "Filter",
+        "clear": "Clear",
+        "send_to": "Send to:",
+        "send_to_repeater_tooltip": "Send to Repeater (Ctrl+R)",
+        "send_to_intruder_tooltip": "Send to Intruder (Ctrl+I)"
       },
       "filter": {
         "title": "Filter",
@@ -415,16 +497,13 @@
         "intercept_off": "Intercept is off"
       },
       "actions": {
-        "action": "Actions",
-        "send_to_repeater": "Send to Repeater",
+        "sendToRepeater": "Send to Repeater",
+        "sendToIntruder": "Send to Intruder",
         "send_to_intruder": "Send to Intruder",
         "set_row_color": "Set Row Color",
-        "title": "Actions",
         "clearAllHistory": "Clear All History"
       },
       "notifications": {
-        "sent_to_repeater": "Request sent to Repeater",
-        "sent_to_intruder": "Request sent to Intruder",
         "sentToRepeater": "Request sent to Repeater.",
         "sentToIntruder": "Request sent to Intruder.",
         "allHistoryCleared": "All history has been cleared.",
@@ -467,17 +546,117 @@
       "select_item": "Select an item to view details",
       "forward_response": "Forward Response",
       "forward_request": "Forward Request",
-      "settings": "Proxy Settings"
+      "settings": "Proxy Settings",
+      "selected": "Selected",
+      "request_type": "Request",
+      "response_type": "Response",
+      "includes_request": "(includes request)",
+      "clear_queue": "Clear Queue",
+      "queue_stats_text": "Queue: {total} items ({requests} requests, {responses} responses)",
+      "forwarded_all": "Forwarded all {total} intercepted items",
+      "forwarded_partial": "Forwarded {success} items, {failed} failed",
+      "final_request": "Final Request",
+      "intercepted_request": "Intercepted Request",
+      "intercepted_response": "Intercepted Response",
+      "editable": "Editable",
+      "readonly": "Read-only",
+      "no_response_yet": "No Response Yet",
+      "forward_request_first": "Please forward the request first to get a response",
+      "request_forwarded_waiting": "Request forwarded, waiting for response...",
+      "forward_error": "Forward failed",
+      "transaction_complete": "Transaction complete",
+      "response_dropped": "Response dropped",
+      "drop_error": "Drop failed",
+      "test_intercept_step1": "1. Make sure browser proxy is set to ChYing proxy address (click the browser icon above to auto-configure)",
+      "test_intercept_step2": "2. Visit any website (e.g. httpbin.org/get)",
+      "test_intercept_step3": "3. Requests will appear in the queue above for processing",
+      "test_intercept_step4": "4. You can modify request content, then click Forward or Drop",
+      "filter_select_all": "Select All",
+      "filter_deselect_all": "Deselect All",
+      "filter_status_placeholder": "Search status codes...",
+      "clear_memory": "Clear Memory",
+      "memory_cleared": "Memory cleared",
+      "resize_panel": "Drag to resize panel",
+      "intercept_toggle_failed": "Failed to toggle intercept",
+      "all_history_cleared": "All history cleared (database + memory)",
+      "all_history_clear_failed": "Failed to clear all history",
+      "memory_data_cleaned": "Memory data cleaned (database preserved)",
+      "memory_data_clean_failed": "Failed to clean memory data",
+      "filtered_by_host": "Filtered by host: {host}",
+      "filtered_by_method": "Filtered by method: {method}",
+      "all_filters_cleared": "All filters cleared",
+      "traffic_stats": "Traffic Stats",
+      "traffic_total": "Total: {total}",
+      "loading_request_response": "Loading request and response data...",
+      "status_sent": "Sent",
+      "request_sent_status": "Request sent",
+      "unknown_url": "(Unknown)",
+      "copy_url": "Copy URL",
+      "copy_host": "Copy Host",
+      "show_host_only": "Show this host only",
+      "cancel_host_filter": "Cancel host filter",
+      "show_method_only": "Show {method} requests only",
+      "cancel_method_filter": "Cancel method filter",
+      "clear_all_filters": "Clear all filters",
+      "cleanup_actions": "Cleanup Actions",
+      "clear_all_history_db_mem": "Clear all history",
+      "db_and_memory": "Database + Memory",
+      "clean_memory_only": "Clean memory data only",
+      "keep_database": "Keep Database",
+      "select_color_marker": "Select color marker",
+      "remove_color": "Remove color",
+      "set_color_to": "Set to {color}",
+      "filter_select_all_title": "Select All",
+      "filter_deselect_all_title": "Deselect All",
+      "filter_status_search_placeholder": "Enter prefix, e.g. 20, 30...",
+      "filter_no_data": "No data",
+      "filter_no_match_status": "No matching status codes",
+      "filter_extension": "Extension",
+      "filter_exclude_static_title": "Quick exclude static resources",
+      "toggle_rule_enabled": "Enable or disable this rule",
+      "notification_close": "Close"
     },
     "repeater": {
       "title": "Repeater",
       "description": "Manually repeat and modify HTTP requests",
       "send": "Send",
       "new_tab": "New Tab",
+      "clone": "Clone",
+      "send_to_intruder": "Send to Intruder",
+      "new_tab_tooltip": "New Tab (Ctrl+T)",
+      "clone_tooltip": "Clone Tab (Ctrl+D)",
+      "send_to_intruder_tooltip": "Send to Intruder (Ctrl+I)",
+      "no_request_open": "No Request Open",
+      "create_tab_hint": "Create a new tab to start sending requests",
       "request": "Request",
       "response": "Response",
       "history": "History",
-      "sending": "Sending request..."
+      "sending": "Sending request...",
+      "create_new_group": "Create New Group",
+      "new_group": "New Group",
+      "modal": {
+        "title": "New Request",
+        "url_label": "Target URL",
+        "url_placeholder": "Enter target URL",
+        "method_label": "Request Method",
+        "headers_label": "Headers",
+        "headers_placeholder": "One header per line, format: Key: Value",
+        "body_label": "Body",
+        "body_placeholder": "Enter request body",
+        "url_required": "Please enter a target URL",
+        "create": "Create",
+        "cancel": "Cancel",
+        "default_purple": "Default (Purple)",
+        "red": "Red",
+        "green": "Green",
+        "blue": "Blue",
+        "yellow": "Yellow",
+        "orange": "Orange",
+        "cyan": "Teal",
+        "enter_name": "Enter a name",
+        "name_label": "Name",
+        "color_label": "Color"
+      }
     },
     "intruder": {
       "title": "Intruder",
@@ -494,6 +673,8 @@
       "clear_positions": "Clear §positions§",
       "auto_positions": "Auto mark §positions§",
       "add_position": "Add §position§",
+      "add_position_tooltip": "Mark selected text as payload position",
+      "clear_all_tooltip": "Clear all payload positions",
       "payload_sets": "Payload sets",
       "payload_type": "Payload type",
       "payload_options": "Payload options",
@@ -577,7 +758,41 @@
       "replace": "Replace",
       "use_regex": "Use regular expression",
       "no_items": "No items",
-      "no_rules": "No rules defined yet"
+      "no_rules": "No rules defined yet",
+      "group_modal": {
+        "title": "Create Group",
+        "name_label": "Group Name",
+        "name_placeholder": "Enter group name",
+        "color_label": "Group Color",
+        "name_required": "Please enter a group name",
+        "create": "Create",
+        "cancel": "Cancel"
+      },
+      "processing": {
+        "add_prefix": "Add prefix before payload",
+        "add_suffix": "Add suffix after payload",
+        "match_replace": "Match and replace payload content",
+        "substring": "Extract substring",
+        "reverse": "Reverse payload",
+        "url_encode": "URL Encode",
+        "url_decode": "URL Decode",
+        "base64_encode": "Base64 Encode",
+        "base64_decode": "Base64 Decode",
+        "hash_md5": "MD5 Hash",
+        "hash_sha256": "SHA-256 Hash",
+        "to_uppercase": "To Uppercase",
+        "to_lowercase": "To Lowercase",
+        "to_capitalize": "Capitalize",
+        "modify_case": "Modify Case",
+        "hash": "Hash",
+        "start_index": "Start Index",
+        "length": "Length",
+        "case_type": "Case Type",
+        "hash_type": "Hash Type",
+        "please_select": "Select...",
+        "substring_desc": "From index {start}, length {length}",
+        "reverse_substring_desc": "From index {start}, length {length} (reversed)"
+      }
     },
     "decoder": {
       "title": "Encoder/Decoder",
@@ -679,7 +894,8 @@
         "payload_nbf": "nbf (Not Before): Time before which JWT must not be accepted",
         "payload_iat": "iat (Issued At): Time at which the JWT was issued",
         "payload_jti": "jti (JWT ID): Unique identifier for the JWT",
-        "signature_tooltip": "The secret key ensures the integrity and security of the JWT. Risks include key leakage attacks and key confusion attacks."
+        "signature_tooltip": "The secret key ensures the integrity and security of the JWT. Risks include key leakage attacks and key confusion attacks.",
+        "brute_progress": "Brute Progress"
       },
       "fuzz": {
         "title": "Directory Scan",
@@ -690,7 +906,27 @@
         "stop_scan": "Stop Scan",
         "scan_progress": "Scan Progress",
         "no_scan_results": "No Scan Results",
-        "select_scan_result": "Select a scan result to view details"
+        "select_scan_result": "Select a scan result to view details",
+        "notifications": {
+          "scanning": "{target} scanning...",
+          "scan_started": "{target} scan started",
+          "scan_completed": "{target} scan completed",
+          "scan_error": "Scan error: {error}",
+          "enter_target_url": "Please enter a target URL",
+          "scan_stopped": "{target} scan stopped",
+          "stop_scan_failed": "Failed to stop scan: {error}",
+          "proxy_set_success": "Proxy set: {proxy}",
+          "proxy_set_failed": "Failed to set proxy: {error}",
+          "enter_valid_proxy": "Please enter a valid proxy address",
+          "proxy_disabled": "Proxy disabled",
+          "proxy_disable_failed": "Failed to disable proxy: {error}"
+        },
+        "columns": {
+          "method": "Method",
+          "status_code": "Status Code",
+          "length": "Length"
+        },
+        "target_url_placeholder": "Enter target URL, e.g.: https://example.com"
       },
       "xss": {
         "title": "XSS",
@@ -1084,6 +1320,8 @@
     "sensitive_parameters": "Sensitive Parameters",
     "add_regex": "Add",
     "edit_regex": "Edit Regex Expression",
+    "regex_placeholder": "Enter regular expression",
+    "regex_invalid_hint": "Please enter a valid regular expression",
     "ai": {
       "title": "AI Assistant",
       "description": "Configure Claude AI assistant for security analysis and automation.",
@@ -1219,7 +1457,45 @@
       "delete_confirm_message": "Are you sure you want to delete project \"{name}\"?",
       "delete_warning": "This action will permanently delete the project data and cannot be undone.",
       "delete_success": "Project deleted successfully",
-      "delete_failed": "Failed to delete project"
+      "delete_failed": "Failed to delete project",
+      "init_preparing": "Preparing...",
+      "init_starting": "Starting initialization...",
+      "init_base_components": "Initializing base components...",
+      "init_loading_config": "Loading configuration...",
+      "init_connecting_db": "Connecting to database...",
+      "init_verifying_schema": "Verifying database schema...",
+      "init_starting_proxy": "Starting proxy server...",
+      "init_loading_data": "Loading project data...",
+      "init_completing": "Completing initialization...",
+      "init_done": "Initialization complete, redirecting...",
+      "app_starting": "ChYing is starting",
+      "app_starting_desc": "Please wait, preparing the security testing environment...",
+      "literary_quote": "将旦昧爽之交，日夕昏明之际，北面而察之，淡淡焉若有物存，莫识其状。其所触也，窃窃然有声，经物而物不疾也。",
+      "literary_source": "—— 《列子·汤问》",
+      "project_actions": "Project Actions",
+      "select_action": "Select an action to perform",
+      "open_existing": "Open Existing Project",
+      "open_existing_desc": "Select from existing projects",
+      "create_new": "Create New Project",
+      "create_new_desc": "Create a brand new project",
+      "start_temp": "Start Temporary Project",
+      "start_temp_desc": "Quick start, auto-save",
+      "select_project": "Select Project",
+      "project_count": "{count} projects",
+      "local_tag": "Local",
+      "request_count": "{count} requests",
+      "no_projects_found": "No projects found",
+      "create_first": "Please create a new project first",
+      "create_new_project": "Create New Project",
+      "project_name_label": "Project Name",
+      "project_name_input_placeholder": "Enter new project name...",
+      "project_name_hint": "Project name will be used to identify your test project",
+      "temp_project_info": "Temporary Project Info",
+      "temp_project_desc": "Temporary projects automatically create timestamped database files. Data will be saved. Suitable for quick testing.",
+      "quick_start": "Quick Start",
+      "auto_save": "Auto Save",
+      "select_action_prompt": "Select an Action",
+      "select_action_hint": "Select a project action from the left"
     }
   },
   "scanLog": {
@@ -1228,7 +1504,30 @@
       "status": "State distribution"
     },
     "filter": {
-      "title": "Filter"
+      "title": "Filter",
+      "search": "Search",
+      "search_placeholder": "Search URL, module, vulnerability type...",
+      "targetHost": "Target Host",
+      "moduleTypes": "Module Types"
+    },
+    "panel": {
+      "title": "Event Logs",
+      "no_data": "No log data",
+      "loading": "Loading scan logs...",
+      "log_id": "Log ID:",
+      "target_url": "Target URL:",
+      "vuln_type": "Vulnerability Type:",
+      "http_status": "HTTP Status:",
+      "response_length": "Response Length:",
+      "payload": "Payload:",
+      "description": "Description:",
+      "evidence": "Evidence:",
+      "columns": {
+        "time": "Time",
+        "level": "Level",
+        "module": "Module:",
+        "message": "Message"
+      }
     }
   },
   "vulnerability": {
@@ -1239,18 +1538,16 @@
     "no_vulnerabilities": "No vulnerabilities found",
     "select_to_view_details": "Select a vulnerability to view details",
     "confirm_clear": "Confirm to clear all vulnerability data?",
-    
     "search_keyword": "Search Keyword",
     "search_placeholder": "Search vulnerabilities by type, target, description, plugin...",
     "target_host": "Target Host",
     "target_host_placeholder": "Filter by target host",
     "level": "Risk Level",
-    "type": "Vulnerability Type", 
+    "type": "Vulnerability Type",
     "plugin": "Plugin",
     "date_range": "Date Range",
     "start_date": "Start Date",
     "end_date": "End Date",
-    
     "target": "Target",
     "ip": "IP Address",
     "method": "HTTP Method",
@@ -1258,13 +1555,20 @@
     "payload": "Payload",
     "description": "Description",
     "curl_command": "cURL Command",
-    
     "total_vulnerabilities": "Total Vulnerabilities",
     "recent_24h": "Recent 24h",
     "risk_discovery_rate": "Risk Discovery Rate",
     "level_distribution": "Risk Level Distribution",
     "top_plugins": "Top Plugins",
-    "top_types": "Top Vulnerability Types"
+    "top_types": "Top Vulnerability Types",
+    "columns": {
+      "risk_level": "Risk Level",
+      "vuln_type": "Vulnerability Type",
+      "target": "Target",
+      "plugin": "Plugin",
+      "found_time": "Found Time",
+      "description": "Description"
+    }
   },
   "claude": {
     "title": "AI Security Assistant",
@@ -1368,8 +1672,7 @@
     },
     "input": {
       "placeholder": "Ask me anything about security testing...",
-      "send": "Send",
-      "stop": "Stop"
+      "hint": "Press Enter to send, Shift+Enter for new line"
     },
     "actions": {
       "newChat": "New Chat",
@@ -1423,13 +1726,141 @@
       "listVulns": "Show discovered vulnerabilities",
       "fingerprints": "What technologies are detected?"
     },
-    "input": {
-      "placeholder": "Ask me anything about security testing...",
-      "hint": "Press Enter to send, Shift+Enter for new line"
-    },
     "prefill": {
       "analyzeTraffic": "Please analyze the following {count} HTTP traffic records (IDs: {ids}). Look for potential security vulnerabilities, sensitive information leaks, and suspicious patterns.",
       "selectedTraffic": "{count} traffic records selected"
+    }
+  },
+  "scan_target": {
+    "title": "Scan Target Management",
+    "total": "Total: {count}",
+    "today": "Today: {count}",
+    "scheduler": "Scheduler",
+    "scheduler_running": "Running",
+    "scheduler_stopped": "Stopped",
+    "start_scheduler": "Start",
+    "stop_scheduler": "Stop",
+    "start_scheduler_failed": "Failed to start scheduler: {error}",
+    "stop_scheduler_failed": "Failed to stop scheduler: {error}",
+    "add_target": "Add Target",
+    "batch_add": "Batch Add",
+    "no_targets": "No scan targets",
+    "add_first_target": "Add First Target",
+    "high_priority": "High Priority",
+    "scan_progress": "Scan Progress",
+    "found_hosts": "Hosts Found",
+    "found_ports": "Open Ports",
+    "found_vulns": "Vulnerabilities Found",
+    "found_dirs": "Directories Found",
+    "start_scan": "Start Scan",
+    "pause_scan": "Pause Scan",
+    "retry_scan": "Retry Scan",
+    "pagination": {
+      "showing": "Showing {from} to {to} of {total} items",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "dialog": {
+      "add_title": "Add Scan Target",
+      "batch_title": "Batch Add Scan Targets",
+      "detail_title": "Scan Target Details",
+      "target_name": "Target Name *",
+      "target_name_placeholder": "Enter target name",
+      "target_type": "Target Type *",
+      "target_address": "Target Address *",
+      "target_address_placeholder": "Enter URL, domain, IP address or CIDR",
+      "description": "Description",
+      "description_placeholder": "Enter target description",
+      "priority": "Priority",
+      "schedule_type": "Schedule Type",
+      "target_list": "Target List *",
+      "target_list_placeholder": "One target per line, e.g.:\nhttps://example.com\n192.168.1.1\n10.0.0.0/24",
+      "target_list_hint": "Enter one target address per line",
+      "batch_add_btn": "Batch Add"
+    },
+    "detail": {
+      "basic_info": "Basic Information",
+      "execution_info": "Execution Information",
+      "name": "Name:",
+      "type": "Type:",
+      "status": "Status:",
+      "priority": "Priority:",
+      "start_time": "Start Time:",
+      "end_time": "End Time:",
+      "duration": "Duration:",
+      "progress": "Progress:",
+      "target_address": "Target Address",
+      "scan_results": "Scan Results",
+      "error_info": "Error Information"
+    },
+    "filter": {
+      "status": "Status:",
+      "type": "Type:",
+      "search": "Search:",
+      "all": "All",
+      "search_placeholder": "Search target name or address..."
+    },
+    "status": {
+      "pending": "Pending",
+      "running": "Running",
+      "completed": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "paused": "Paused"
+    },
+    "type": {
+      "single": "Single URL",
+      "domain": "Domain",
+      "subnet": "Subnet",
+      "cidr": "CIDR",
+      "batch": "Batch Targets"
+    },
+    "priority": {
+      "highest": "Highest",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "lowest": "Lowest"
+    },
+    "schedule": {
+      "once": "Once (Immediate)",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "duration": {
+      "seconds": "{n}s",
+      "minutes": "{m}m {s}s",
+      "hours": "{h}h {m}m"
+    },
+    "local_user": "Local User",
+    "add_failed": "Add failed: {error}",
+    "enter_target_list": "Please enter target list",
+    "batch_add_failed": "Batch add failed: {error}",
+    "confirm_delete": "Are you sure you want to delete scan target \"{name}\"?",
+    "delete_failed": "Delete failed: {error}",
+    "update_status_failed": "Update status failed: {error}",
+    "hosts": "Hosts",
+    "ports": "Ports",
+    "vulns": "Vulns",
+    "dirs": "Dirs"
+  },
+  "store": {
+    "vulnerability": {
+      "unknown_type": "Unknown Type",
+      "unknown_plugin": "Unknown Plugin"
+    },
+    "claude": {
+      "create_session_empty": "Failed to create session: response is empty",
+      "create_session_no_id": "Failed to create session: session_id is empty",
+      "no_active_session": "No active session",
+      "unknown_error": "Unknown error"
+    }
+  },
+  "utils": {
+    "copy": {
+      "copied": "Copied to clipboard",
+      "copy_failed": "Copy failed"
     }
   }
 }

@@ -66,7 +66,7 @@ export function useResponseViewManager(responseData: string) {
         if (isHtmlContent(contentType, newData.body)) {
           return sanitizeHtml(newData.body);
         }
-        return newData.body || '<!-- 无法渲染此内容类型 -->';
+        return newData.body || '';
       case 'pretty':
       default:
         return responseData;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { RequestResponsePanel, HttpTrafficTable, type HttpTrafficItem } from '../../../components/common';
 import type { ProxyHistoryItem } from '../../../types';
 import { usePanelResize } from '../../../composables/usePanelResize';
@@ -25,8 +26,10 @@ const { panelHeight: tableHeight, startResize: startResizeTable } = usePanelResi
   panelId: 'proxy-history-table-height',
   initialHeight: 200,
   minHeight: 100,
-  maxHeightOffset: 200 
+  maxHeightOffset: 200
 });
+
+const { t } = useI18n();
 
 // Computed properties for request and response data
 const requestData = ref<string>('');
@@ -87,7 +90,7 @@ const handleCheckedItemsUpdate = (items: HttpTrafficItem[]) => {
         <!-- 左侧：流量统计 -->
         <div class="flex items-center space-x-4">
           <div class="text-sm text-gray-600 dark:text-gray-300">
-            <span class="font-medium">流量统计:</span>
+            <span class="font-medium">{{ t('modules.proxy.traffic_stats') }}:</span>
           </div>
           <div class="flex items-center space-x-3">
             <div class="flex items-center">

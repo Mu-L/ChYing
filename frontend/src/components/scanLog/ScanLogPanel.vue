@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, h } from 'vue';
+import { useI18n } from 'vue-i18n';
 import RequestResponsePanel from '../common/RequestResponsePanel.vue';
 import HttpTrafficTable from '../common/HttpTrafficTable.vue';
 import type { ScanLogItem, RequestScanDetail } from '../../types/scanLog';
@@ -7,6 +8,8 @@ import { usePanelResize } from '../../composables/usePanelResize';
 import { getModuleColor } from '../../utils/colors';
 // @ts-ignore
 import { GetRequestScanPBody } from "../../../bindings/github.com/yhy0/ChYing/app.js";
+
+const { t } = useI18n();
 
 const props = defineProps<{
   items: ScanLogItem[];
@@ -151,7 +154,7 @@ const customColumns = [
       <div class="empty-state-icon">
         <i class="bx bx-loader-alt bx-spin"></i>
       </div>
-      <div class="empty-state-text">加载扫描日志中...</div>
+      <div class="empty-state-text">{{ t('scanLog.panel.loading') }}</div>
     </div>
     
     <!-- 扫描日志表格 -->
@@ -184,41 +187,41 @@ const customColumns = [
         <div class="summary-grid">
           <div class="summary-section">
             <div class="summary-item">
-              <span class="summary-label">日志ID:</span>
+              <span class="summary-label">{{ t('scanLog.panel.log_id') }}</span>
               <code class="code-snippet">{{ selectedItem.id }}</code>
             </div>
             <div class="summary-item">
-              <span class="summary-label">模块:</span>
+              <span class="summary-label">{{ t('scanLog.panel.columns.module') }}</span>
               <span class="text-info">{{ selectedItem.moduleName }}</span>
             </div>
             <div class="summary-item">
-              <span class="summary-label">目标URL:</span>
+              <span class="summary-label">{{ t('scanLog.panel.target_url') }}</span>
               <span class="text-truncate">{{ selectedItem.target }}</span>
             </div>
             <div v-if="selectedItem.vulnerability" class="summary-item">
-              <span class="summary-label">漏洞类型:</span>
+              <span class="summary-label">{{ t('scanLog.panel.vuln_type') }}</span>
               <span class="text-danger">{{ selectedItem.vulnerability }}</span>
             </div>
           </div>
           <div class="summary-section">
             <div class="summary-item">
-              <span class="summary-label">HTTP状态:</span>
+              <span class="summary-label">{{ t('scanLog.panel.http_status') }}</span>
               <code class="code-snippet">{{ selectedItem.status }}</code>
             </div>
             <div class="summary-item">
-              <span class="summary-label">响应长度:</span>
+              <span class="summary-label">{{ t('scanLog.panel.response_length') }}</span>
               <span>{{ selectedItem.length }} bytes</span>
             </div>
             <div v-if="selectedItem.payload" class="summary-item">
-              <span class="summary-label">载荷:</span>
+              <span class="summary-label">{{ t('scanLog.panel.payload') }}</span>
               <code class="code-snippet">{{ selectedItem.payload }}</code>
             </div>
             <div v-if="selectedItem.description" class="summary-item">
-              <span class="summary-label">描述:</span>
+              <span class="summary-label">{{ t('scanLog.panel.description') }}</span>
               <span class="text-secondary">{{ selectedItem.description }}</span>
             </div>
             <div v-if="selectedItem.evidence" class="summary-item">
-              <span class="summary-label">证据:</span>
+              <span class="summary-label">{{ t('scanLog.panel.evidence') }}</span>
               <span class="text-secondary">{{ selectedItem.evidence }}</span>
             </div>
           </div>

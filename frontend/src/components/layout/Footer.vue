@@ -22,7 +22,7 @@ const vulnerabilityStore = useVulnerabilityStore();
 const scanLogStore = useScanLogStore();
 
 // 内存使用状态
-const memoryUsage = ref('获取中...');
+const memoryUsage = ref(t('layout.footer.fetching'));
 const goroutineCount = ref(0);
 const gcCount = ref(0);
 
@@ -46,11 +46,11 @@ const fetchMemoryUsage = async () => {
       goroutineCount.value = memInfo.numGoroutine;
       gcCount.value = memInfo.numGC;
     } else {
-      memoryUsage.value = '获取失败';
+      memoryUsage.value = t('layout.footer.fetch_failed');
     }
   } catch (error) {
     console.error('获取内存使用情况失败:', error);
-    memoryUsage.value = '获取失败';
+    memoryUsage.value = t('layout.footer.fetch_failed');
   }
 };
 
@@ -90,7 +90,7 @@ const handleDBError = (payload: { data: DBError }) => {
   const err = payload.data;
   console.warn('Footer - 数据库错误:', err);
   // 显示错误通知，持续 5 秒
-  message.error(`数据库操作失败 [${err.operation}]: ${err.error}`, 5);
+  message.error(t('layout.footer.db_operation_failed', { operation: err.operation, error: err.error }), 5);
 };
 
 

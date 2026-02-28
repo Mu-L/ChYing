@@ -52,6 +52,8 @@ var keyMappings = map[string]string{
 	"maxdepth":             "maxDepth",
 	"maxcountoflinks":      "maxCountOfLinks",
 	"allowvisitparentpath": "allowVisitParentPath",
+	// 顶级配置键
+	"mcp_port":             "mcpPort",
 }
 
 // NormalizeConfigYAML 规范化配置文件的 YAML 内容

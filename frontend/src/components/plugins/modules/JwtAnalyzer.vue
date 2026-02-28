@@ -191,7 +191,7 @@ watch(headerJson, (newValue) => {
     jsonError.header.value = undefined;
     resignJwt();
   } catch (e) {
-    jsonError.header.value = t('modules.plugins.jwt_analyzer.invalid_json', '无效的JSON格式');
+    jsonError.header.value = t('modules.plugins.jwt_analyzer.invalid_json');
   }
 }, { deep: true });
 
@@ -204,7 +204,7 @@ watch(payloadJson, (newValue) => {
     jsonError.payload.value = undefined;
     resignJwt();
   } catch (e) {
-    jsonError.payload.value = t('modules.plugins.jwt_analyzer.invalid_json', '无效的JSON格式');
+    jsonError.payload.value = t('modules.plugins.jwt_analyzer.invalid_json');
   }
 }, { deep: true });
 
@@ -384,7 +384,7 @@ const toggleTooltip = (id: string | null) => {
           <!-- 爆破进度条 -->
           <div v-if="showProgress" class="mb-4">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-medium text-gray-600 dark:text-gray-400">爆破进度</span>
+              <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ t('modules.plugins.jwt_analyzer.brute_progress') }}</span>
               <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ Math.round(bruteProgress) }}%</span>
             </div>
             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
@@ -427,7 +427,7 @@ const toggleTooltip = (id: string | null) => {
       <div
         class="bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm w-full">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 text-center">{{
-          t('modules.plugins.jwt_analyzer.sign_algorithm', '签名算法') }}</h4>
+          t('modules.plugins.jwt_analyzer.sign_algorithm') }}</h4>
 
         <div class="relative w-full mb-6">
           <select v-model="selectedAlgorithm"

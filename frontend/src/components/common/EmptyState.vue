@@ -5,6 +5,7 @@
  */
 
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
   icon?: string;           // BoxIcons 图标类名，如 'bx-folder-open'
@@ -18,13 +19,19 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   icon: 'bx-inbox',
-  title: '暂无数据',
+  title: '',
   description: '',
   size: 'medium',
   showAction: false,
-  actionText: '刷新',
+  actionText: '',
   actionIcon: 'bx-refresh'
 });
+
+const { t } = useI18n();
+
+// i18n 默认值
+const displayTitle = computed(() => props.title || t('common.empty_state.default_title'));
+const displayActionText = computed(() => props.actionText || t('common.empty_state.default_action'));
 
 const emit = defineEmits<{
   (e: 'action'): void;
@@ -79,7 +86,7 @@ const handleAction = () => {
     
     <!-- 标题 -->
     <h4 class="empty-state-title" :class="sizeClasses.title">
-      {{ title }}
+      {{ displayTitle }}
     </h4>
     
     <!-- 描述 -->
@@ -95,7 +102,7 @@ const handleAction = () => {
       @click="handleAction"
     >
       <i v-if="actionIcon" class="bx" :class="actionIcon"></i>
-      {{ actionText }}
+      {{ displayActionText }}
     </button>
     
     <!-- 自定义插槽 -->

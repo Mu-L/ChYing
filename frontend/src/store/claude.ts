@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import { i18n } from '@/i18n';
 import type {
   ChatMessage,
   ToolUse,
@@ -221,7 +222,7 @@ export const useClaudeStore = defineStore('claude', () => {
 
       // 检查返回数据是否有效
       if (!result?.data) {
-        error.value = '创建会话失败：返回数据为空';
+        error.value = i18n.global.t('store.claude.create_session_empty');
         console.error('Result:', result);
         return null;
       }
@@ -230,7 +231,7 @@ export const useClaudeStore = defineStore('claude', () => {
 
       // 检查 session_id 是否存在
       if (!sessionData.session_id) {
-        error.value = '创建会话失败：session_id 为空';
+        error.value = i18n.global.t('store.claude.create_session_no_id');
         console.error('Session data:', sessionData);
         return null;
       }
@@ -401,7 +402,7 @@ export const useClaudeStore = defineStore('claude', () => {
    */
   const sendMessage = async (message: string): Promise<boolean> => {
     if (!currentSessionId.value) {
-      error.value = '没有活动会话';
+      error.value = i18n.global.t('store.claude.no_active_session');
       return false;
     }
 
@@ -521,7 +522,7 @@ export const useClaudeStore = defineStore('claude', () => {
         break;
 
       case 'error':
-        error.value = event.error || '未知错误';
+        error.value = event.error || i18n.global.t('store.claude.unknown_error');
         streaming.value = false;
         break;
 

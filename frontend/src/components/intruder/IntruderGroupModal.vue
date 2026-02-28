@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps<{
   show: boolean;
@@ -15,15 +18,15 @@ const newGroupName = ref('');
 const selectedColor = ref('#4f46e5'); // 添加颜色选择状态
 
 // 预定义的颜色选项
-const colorOptions = [
-  { id: 'default', value: '#4f46e5', label: '默认 (紫色)' },
-  { id: 'red', value: '#ef4444', label: '红色' },
-  { id: 'green', value: '#10b981', label: '绿色' },
-  { id: 'blue', value: '#3b82f6', label: '蓝色' },
-  { id: 'yellow', value: '#f59e0b', label: '黄色' },
-  { id: 'orange', value: '#f97316', label: '橙色' },
-  { id: 'teal', value: '#14b8a6', label: '青色' },
-];
+const colorOptions = computed(() => [
+  { id: 'default', value: '#4f46e5', label: t('modules.intruder.default_color') },
+  { id: 'red', value: '#ef4444', label: t('modules.intruder.red') },
+  { id: 'green', value: '#10b981', label: t('modules.intruder.green') },
+  { id: 'blue', value: '#3b82f6', label: t('modules.intruder.blue') },
+  { id: 'yellow', value: '#f59e0b', label: t('modules.intruder.yellow') },
+  { id: 'orange', value: '#f97316', label: t('modules.intruder.orange') },
+  { id: 'teal', value: '#14b8a6', label: t('modules.intruder.teal') },
+]);
 
 // 提交新分组
 const submitNewGroup = () => {
@@ -60,7 +63,7 @@ const handleModalKeyDown = (event: KeyboardEvent) => {
     <div class="dialog-container dialog-sm" @click.stop>
       <div class="dialog-header">
         <div class="flex justify-between items-center">
-          <h3 class="text-lg font-medium">创建新分组</h3>
+          <h3 class="text-lg font-medium">{{ t('modules.intruder.group_modal.title') }}</h3>
           <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             @click="closeGroupModal">
             <i class="bx bx-x text-xl"></i>
@@ -70,16 +73,16 @@ const handleModalKeyDown = (event: KeyboardEvent) => {
 
       <div class="dialog-content">
         <div class="mb-4">
-          <label class="settings-label">分组名称</label>
+          <label class="settings-label">{{ t('modules.intruder.group_modal.name_label') }}</label>
           <input id="new-group-input-intruder" v-model="newGroupName" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700
                  rounded-md text-gray-800 dark:text-gray-200
                  bg-white dark:bg-[#282838]
-                 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="输入分组名称" spellcheck="false" 
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500" :placeholder="t('modules.intruder.group_modal.name_placeholder')" spellcheck="false"
             @keydown="handleModalKeyDown" />
         </div>
 
         <div class="mb-4">
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">颜色</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">{{ t('modules.intruder.group_modal.color_label') }}</label>
           <div class="grid grid-cols-2 gap-2">
             <div v-for="color in colorOptions" :key="color.id"
               class="flex items-center p-2 rounded cursor-pointer transition-colors" :class="{
@@ -97,12 +100,12 @@ const handleModalKeyDown = (event: KeyboardEvent) => {
         <button class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300
             border border-gray-300 dark:border-gray-700
             hover:bg-gray-100 dark:hover:bg-[#282838] rounded-md" @click="closeGroupModal">
-          取消
+          {{ t('modules.intruder.group_modal.cancel') }}
         </button>
         <button class="px-3 py-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700
             rounded-md" @click="submitNewGroup" :disabled="!newGroupName.trim()"
           :class="{ 'opacity-50 cursor-not-allowed': !newGroupName.trim() }">
-          创建
+          {{ t('modules.intruder.group_modal.create') }}
         </button>
       </div>
     </div>

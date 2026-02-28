@@ -331,14 +331,14 @@ const toggleInterception = () => {
     proxyInterceptEnabled.value = newStatus;
 
     const message = newStatus
-      ? (t('modules.proxy.controls.intercept_on') || '拦截已开启')
-      : (t('modules.proxy.controls.intercept_off') || '拦截已关闭，所有队列项目已放行');
+      ? t('modules.proxy.controls.intercept_on')
+      : t('modules.proxy.controls.intercept_off');
     
     showNotification(message, 'success');
   }).catch((err: any) => {
     console.error('Error setting intercept status:', err);
   showNotification(
-        t('modules.proxy.intercept_toggle_failed') || '拦截状态切换失败', 
+        t('modules.proxy.intercept_toggle_failed'), 
         'error'
   );
   });
@@ -545,10 +545,10 @@ const handleClearAllHistory = async () => {
     store.clearProxyHistory();     // 清空前端 store
     originalProxyHistory.value = []; // 清空原始历史记录的本地引用
     selectedItem.value = null;     // 清除选中项
-    showNotification('所有历史记录已清空（数据库+内存）', 'success');
+    showNotification(t('modules.proxy.all_history_cleared'), 'success');
   } catch (error) {
     console.error('Failed to clear all history:', error);
-    showNotification('清空所有历史记录失败', 'error');
+    showNotification(t('modules.proxy.all_history_clear_failed'), 'error');
   }
   closeContextMenu(); // 关闭右键菜单
 };
@@ -563,10 +563,10 @@ const handleCleanMemoryOnly = async () => {
       throw new Error(result.Error);
     }
     
-    showNotification('内存数据已清理（数据库数据保留）', 'success');
+    showNotification(t('modules.proxy.memory_data_cleaned'), 'success');
   } catch (error) {
     console.error('Failed to clean memory data:', error);
-    showNotification('清理内存数据失败', 'error');
+    showNotification(t('modules.proxy.memory_data_clean_failed'), 'error');
   }
   closeContextMenu();
 };
@@ -585,7 +585,7 @@ const handleFilterByHost = (host: string) => {
     extension: [],
     extensionMode: 'exclude',
   };
-  showNotification(`已筛选主机: ${host}`, 'success');
+  showNotification(t('modules.proxy.filtered_by_host', { host }), 'success');
   closeContextMenu();
 };
 
@@ -603,7 +603,7 @@ const handleFilterByMethod = (method: string) => {
     extension: [],
     extensionMode: 'exclude',
   };
-  showNotification(`已筛选方法: ${method}`, 'success');
+  showNotification(t('modules.proxy.filtered_by_method', { method }), 'success');
   closeContextMenu();
 };
 
@@ -621,7 +621,7 @@ const handleClearFilters = () => {
     extension: [],
     extensionMode: 'exclude',
   };
-  showNotification('已清除所有筛选条件', 'success');
+  showNotification(t('modules.proxy.all_filters_cleared'), 'success');
   closeContextMenu();
 };
 

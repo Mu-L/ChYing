@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import RepeaterTabs from './RepeaterTabs.vue';
 import RepeaterTabPanel from './RepeaterTabPanel.vue';
 import RepeaterModal from './RepeaterModal.vue';
 import { useModulesStore } from '../../store';
 import type { RepeaterTab, RepeaterGroup } from '../../types';
 import { generateUUID } from '../../utils';
+
+const { t } = useI18n();
 
 // 添加历史记录接口
 interface RequestHistory {
@@ -337,9 +340,9 @@ const closeCreateGroupModal = () => {
         <button
           class="btn btn-primary"
           @click="createTab"
-          title="New Tab (Ctrl+T)"
+          :title="t('modules.repeater.new_tab_tooltip')"
         >
-          <i class="bx bx-plus mr-1"></i> New Tab
+          <i class="bx bx-plus mr-1"></i> {{ t('modules.repeater.new_tab') }}
         </button>
         
         <button
@@ -347,9 +350,9 @@ const closeCreateGroupModal = () => {
           @click="cloneTab"
           :disabled="!activeTab"
           :class="{ 'opacity-50 cursor-not-allowed': !activeTab }"
-          title="Clone Tab (Ctrl+D)"
+          :title="t('modules.repeater.clone_tooltip')"
         >
-          <i class="bx bx-duplicate mr-1"></i> Clone
+          <i class="bx bx-duplicate mr-1"></i> {{ t('modules.repeater.clone') }}
         </button>
         
         <button
@@ -357,17 +360,17 @@ const closeCreateGroupModal = () => {
           @click="sendToIntruder"
           :disabled="!activeTab"
           :class="{ 'opacity-50 cursor-not-allowed': !activeTab }"
-          title="Send to Intruder (Ctrl+I)"
+          :title="t('modules.repeater.send_to_intruder_tooltip')"
         >
-          <i class="bx bx-target-lock mr-1"></i> Send to Intruder
+          <i class="bx bx-target-lock mr-1"></i> {{ t('modules.repeater.send_to_intruder') }}
         </button>
 
         <button
           class="btn btn-secondary"
           @click="openCreateGroupModal"
-          title="创建新分组"
+          :title="t('modules.repeater.create_new_group')"
         >
-          <i class="bx bx-folder-plus mr-1"></i> 新分组
+          <i class="bx bx-folder-plus mr-1"></i> {{ t('modules.repeater.new_group') }}
         </button>
       </div>
     </div>
@@ -407,21 +410,21 @@ const closeCreateGroupModal = () => {
       class="empty-state"
     >
       <i class="bx bx-repeat empty-state-icon"></i>
-      <h3 class="empty-state-text">No Request Open</h3>
-      <p class="empty-state-text">Create a new tab to start sending requests</p>
+      <h3 class="empty-state-text">{{ t('modules.repeater.no_request_open') }}</h3>
+      <p class="empty-state-text">{{ t('modules.repeater.create_tab_hint') }}</p>
       <button
         class="btn btn-primary"
         @click="createTab"
       >
-        <i class="bx bx-plus mr-1"></i> New Tab
+        <i class="bx bx-plus mr-1"></i> {{ t('modules.repeater.new_tab') }}
       </button>
     </div>
-    
+
     <!-- 分组创建模态框 -->
     <RepeaterModal
       :show="showGroupModal"
-      title="创建新分组"
-      submit-text="创建"
+      :title="t('modules.repeater.create_new_group')"
+      :submit-text="t('common.actions.create')"
       @close="closeCreateGroupModal"
       @submit="handleCreateGroup"
     />

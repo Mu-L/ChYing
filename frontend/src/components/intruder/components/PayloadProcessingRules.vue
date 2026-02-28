@@ -39,12 +39,12 @@ const processingRuleTypes = computed(() => [
   { value: 'add-prefix', label: t('modules.intruder.prefix') },
   { value: 'add-suffix', label: t('modules.intruder.suffix') },
   { value: 'match-replace', label: t('modules.intruder.match') + '/' + t('modules.intruder.replace') },
-  { value: 'substring', label: 'Substring' },
-  { value: 'reverse-substring', label: 'Reverse substring' },
-  { value: 'modify-case', label: 'Modify case' },
+  { value: 'substring', label: t('modules.intruder.processing.substring') },
+  { value: 'reverse-substring', label: t('modules.intruder.processing.reverse') },
+  { value: 'modify-case', label: t('modules.intruder.processing.modify_case') },
   { value: 'encode', label: t('modules.decoder.encode') },
   { value: 'decode', label: t('modules.decoder.decode') },
-  { value: 'hash', label: 'Hash' }
+  { value: 'hash', label: t('modules.intruder.processing.hash') }
 ]);
 
 // 编码类型选项 - 使用 computed 确保 i18n 已初始化
@@ -186,16 +186,16 @@ const getRuleDescription = (rule: { type: string, config: Record<string, any> })
     case 'match-replace':
       return `${t('modules.intruder.replace')} ${rule.config.regex ? 'regex' : 'string'} "${rule.config.match}" ${t('common.with')} "${rule.config.replace}"`;
     case 'substring':
-      return `子字符串: 从索引 ${rule.config.startIndex} 取 ${rule.config.length} 个字符`;
+      return `${t('modules.intruder.processing.substring')}: ${t('modules.intruder.processing.substring_desc', { start: rule.config.startIndex, length: rule.config.length })}`;
     case 'reverse-substring':
-      return `反向子字符串: 从索引 ${rule.config.startIndex} 取 ${rule.config.length} 个字符并反转`;
+      return `${t('modules.intruder.processing.substring')}: ${t('modules.intruder.processing.reverse_substring_desc', { start: rule.config.startIndex, length: rule.config.length })}`;
     case 'modify-case':
       const caseTypeMap: Record<string, string> = {
-        'lowercase': '转小写',
-        'uppercase': '转大写',
-        'capitalize': '首字母大写'
+        'lowercase': t('modules.intruder.processing.to_lowercase'),
+        'uppercase': t('modules.intruder.processing.to_uppercase'),
+        'capitalize': t('modules.intruder.processing.to_capitalize')
       };
-      return `修改大小写: ${caseTypeMap[rule.config.type] || rule.config.type}`;
+      return `${t('modules.intruder.processing.modify_case')}: ${caseTypeMap[rule.config.type] || rule.config.type}`;
     case 'encode':
       const encodeType = encodeTypes.value.find(item => item.value === rule.config.type);
       return `${t('modules.decoder.encode')}: ${encodeType?.label || rule.config.type}`;
@@ -203,7 +203,7 @@ const getRuleDescription = (rule: { type: string, config: Record<string, any> })
       const decodeType = decodeTypes.value.find(item => item.value === rule.config.type);
       return `${t('modules.decoder.decode')}: ${decodeType?.label || rule.config.type}`;
     case 'hash':
-      return `哈希: ${rule.config.type?.toUpperCase() || 'MD5'}`;
+      return `${t('modules.intruder.processing.hash')}: ${rule.config.type?.toUpperCase() || 'MD5'}`;
     default:
       return `${t('modules.intruder.rule')}: ${rule.type}`;
   }
@@ -469,7 +469,7 @@ const canAddRule = computed(() => {
           <div v-if="selectedRuleType === 'substring' || selectedRuleType === 'reverse-substring'" class="mb-4 space-y-2">
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                开始索引
+                {{ t('modules.intruder.processing.start_index') }}
               </label>
               <input 
                 spellcheck="false"
@@ -482,7 +482,7 @@ const canAddRule = computed(() => {
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                长度
+                {{ t('modules.intruder.processing.length') }}
               </label>
               <input 
                 spellcheck="false"  
@@ -498,17 +498,17 @@ const canAddRule = computed(() => {
           <!-- 大小写修改配置 -->
           <div v-if="selectedRuleType === 'modify-case'" class="mb-4">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              大小写类型
+              {{ t('modules.intruder.processing.case_type') }}
             </label>
             <div class="relative">
               <select
                 v-model="ruleConfig.type"
                 class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-[#282838] text-gray-700 dark:text-gray-300 appearance-none"
               >
-                <option value="">请选择...</option>
-                <option value="lowercase">转小写</option>
-                <option value="uppercase">转大写</option>
-                <option value="capitalize">首字母大写</option>
+                <option value="">{{ t('modules.intruder.processing.please_select') }}</option>
+                <option value="lowercase">{{ t('modules.intruder.processing.to_lowercase') }}</option>
+                <option value="uppercase">{{ t('modules.intruder.processing.to_uppercase') }}</option>
+                <option value="capitalize">{{ t('modules.intruder.processing.to_capitalize') }}</option>
               </select>
               <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                 <i class="bx bx-chevron-down text-gray-500"></i>
@@ -519,14 +519,14 @@ const canAddRule = computed(() => {
           <!-- 哈希配置 -->
           <div v-if="selectedRuleType === 'hash'" class="mb-4">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              哈希类型
+              {{ t('modules.intruder.processing.hash_type') }}
             </label>
             <div class="relative">
               <select
                 v-model="ruleConfig.type"
                 class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-[#282838] text-gray-700 dark:text-gray-300 appearance-none"
               >
-                <option value="">请选择...</option>
+                <option value="">{{ t('modules.intruder.processing.please_select') }}</option>
                 <option value="md5">MD5</option>
                 <option value="sha1">SHA1</option>
                 <option value="sha256">SHA256</option>

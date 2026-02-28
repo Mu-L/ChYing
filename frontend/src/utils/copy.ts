@@ -1,12 +1,13 @@
 // 复制功能
 import { message } from "./message";
+import { i18n } from '@/i18n';
 
 export function copyList(data: string[]) {
     const apiList = data.join("\n"); // 将 API 列表转换为字符串
     navigator.clipboard.writeText(apiList).then(() => {
-        message.success("已复制到剪贴板");
+        message.success(i18n.global.t('utils.copy.copied'));
     }).catch(err => {
-        message.error("复制失败");
+        message.error(i18n.global.t('utils.copy.copy_failed'));
         message.error(err);
         console.error(err);
     });

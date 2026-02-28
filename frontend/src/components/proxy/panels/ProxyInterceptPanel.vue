@@ -453,7 +453,7 @@ const interceptColumns = computed<HttpTrafficColumn<any>[]>(() => [
   },
   {
     id: 'method',
-    name: t('common.method') || '方法',
+    name: t('common.method'),
     width: 80,
     cellRenderer: ({ item }) => h('span', {
       class: [
@@ -486,13 +486,13 @@ const interceptColumns = computed<HttpTrafficColumn<any>[]>(() => [
       }
       // 如果没有 host，显示完整 URL 或 path
       return h('div', { class: 'flex truncate min-w-0 w-full' }, [
-        h('span', { class: 'text-gray-600 dark:text-gray-300' }, displayUrl || '(未知)')
+        h('span', { class: 'text-gray-600 dark:text-gray-300' }, displayUrl || t('modules.proxy.unknown_url'))
       ]);
     }
   },
   {
     id: 'status',
-    name: t('common.status') || '状态',
+    name: t('common.status'),
     width: 100,
     cellRenderer: ({ item }) => {
       if (item.status && typeof item.status === 'number') {
@@ -507,7 +507,7 @@ const interceptColumns = computed<HttpTrafficColumn<any>[]>(() => [
           ]
         }, item.status.toString());
       } else if (item.status === 'sent') {
-        return h('span', { class: 'text-sm font-medium text-blue-600 dark:text-blue-400' }, '已发送');
+        return h('span', { class: 'text-sm font-medium text-blue-600 dark:text-blue-400' }, t('modules.proxy.status_sent'));
       } else {
         return h('span', { class: 'text-gray-400 dark:text-gray-500 text-sm' }, '-');
       }
@@ -515,7 +515,7 @@ const interceptColumns = computed<HttpTrafficColumn<any>[]>(() => [
   },
   {
     id: 'type',
-    name: t('common.type') || '类型',
+    name: t('common.type'),
     width: 100,
     cellRenderer: ({ item }) => h('div', { class: 'flex flex-col gap-1' }, [
       h('span', {
@@ -527,13 +527,13 @@ const interceptColumns = computed<HttpTrafficColumn<any>[]>(() => [
             'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200': item.type === 'response'
           }
         ]
-      }, item.type === 'request' ? '请求' : '响应'),
-      item.status === 'sent' ? h('span', { class: 'text-xs text-gray-500 dark:text-gray-400' }, '请求已发送') : null
+      }, item.type === 'request' ? t('modules.proxy.request_type') : t('modules.proxy.response_type')),
+      item.status === 'sent' ? h('span', { class: 'text-xs text-gray-500 dark:text-gray-400' }, t('modules.proxy.request_sent_status')) : null
     ])
   },
   {
     id: 'timestamp',
-    name: t('common.time') || '时间',
+    name: t('common.time'),
     width: 120,
     cellRenderer: ({ item }) => h('span', {
       class: 'text-xs font-mono text-gray-500 dark:text-gray-400'
@@ -580,10 +580,10 @@ const forwardIntercept = () => {
       // 保存状态
       saveState();
       
-      emit('notify', t('modules.proxy.request_forwarded_waiting') || '请求已放行，等待响应...', 'success');
+      emit('notify', t('modules.proxy.request_forwarded_waiting'), 'success');
     }).catch((err: any) => {
       console.error('Error forwarding request:', err);
-      emit('notify', t('modules.proxy.forward_error') || '放行失败', 'error');
+      emit('notify', t('modules.proxy.forward_error'), 'error');
     });
   } else {
     // 响应阶段：使用编辑后的响应数据
@@ -611,10 +611,10 @@ const forwardIntercept = () => {
       // 保存状态
       saveState();
       
-      emit('notify', t('modules.proxy.transaction_complete') || '事务已完成', 'success');
+      emit('notify', t('modules.proxy.transaction_complete'), 'success');
     }).catch((err: any) => {
       console.error('Error forwarding response:', err);
-      emit('notify', t('modules.proxy.forward_error') || '放行失败', 'error');
+      emit('notify', t('modules.proxy.forward_error'), 'error');
     });
   }
 };
@@ -653,13 +653,13 @@ const dropIntercept = () => {
     saveState();
     
     const message = interceptType === 'request' ?
-      (t('modules.proxy.request_dropped') || '请求已丢弃') :
-      (t('modules.proxy.response_dropped') || '响应已丢弃');
+      t('modules.proxy.request_dropped') :
+      t('modules.proxy.response_dropped');
 
     emit('notify', message, 'success');
   }).catch((err: any) => {
     console.error('Error dropping intercept:', err);
-    emit('notify', t('modules.proxy.drop_error') || '丢弃失败', 'error');
+    emit('notify', t('modules.proxy.drop_error'), 'error');
   });
 };
 
@@ -702,10 +702,10 @@ const forwardAllAndClear = () => {
     clearQueue();
     
     // 显示通知
-    emit('notify', 
-      failed === 0 
-        ? `已放行所有 ${totalItems} 个拦截项目` 
-        : `已放行 ${successful} 个项目，${failed} 个失败`, 
+    emit('notify',
+      failed === 0
+        ? t('modules.proxy.forwarded_all', { total: totalItems })
+        : t('modules.proxy.forwarded_partial', { success: successful, failed: failed }),
       failed === 0 ? 'success' : 'error'
     );
   });
@@ -926,21 +926,20 @@ onBeforeUnmount(() => {
         <!-- 右侧：队列统计和操作 -->
         <div class="flex items-center space-x-4">
           <div class="text-xs text-gray-600 dark:text-gray-400">
-            {{ t('modules.proxy.queue_stats', {
+            {{ t('modules.proxy.queue_stats_text', {
               total: queueStats.total, requests: queueStats.requests, responses:
                 queueStats.responses
-            }) || `队列: ${queueStats.total} 项 (${queueStats.requests} 请求, ${queueStats.responses}
-            响应)` }}
+            }) }}
           </div>
           <!-- 调试信息 -->
           <div v-if="selectedIntercept" class="text-xs text-blue-600 dark:text-blue-400">
-            {{ t('modules.proxy.selected') || '选中' }}: #{{ selectedIntercept.sequence }}
-            {{ selectedIntercept.type === 'request' ? '请求' : '响应' }}
+            {{ t('modules.proxy.selected') }}: #{{ selectedIntercept.sequence }}
+            {{ selectedIntercept.type === 'request' ? t('modules.proxy.request_type') : t('modules.proxy.response_type') }}
             <span v-if="selectedIntercept.type === 'response'" class="ml-1 text-gray-500">(含请求)</span>
           </div>
           <button v-if="interceptQueue.length > 0" @click="clearQueue"
             class="text-xs px-2 py-1 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors">
-            {{ t('modules.proxy.clear_queue') || '清空队列' }}
+            {{ t('modules.proxy.clear_queue') }}
           </button>
         </div>
       </div>
@@ -1016,11 +1015,11 @@ onBeforeUnmount(() => {
             <div
               class="px-3 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#292945] flex-shrink-0">
             <span class="text-xs font-medium text-gray-600 dark:text-gray-400">
-                {{ t('common.request') }} - {{ isRequestReadOnly ? (t('modules.proxy.final_request') || '最终请求') :
-                  (t('modules.proxy.intercepted_request') || '拦截请求') }}
+                {{ t('common.request') }} - {{ isRequestReadOnly ? t('modules.proxy.final_request') :
+                  t('modules.proxy.intercepted_request') }}
                 <span v-if="!isRequestReadOnly" class="ml-2 text-green-600 dark:text-green-400">({{
-                  t('modules.proxy.editable') || '可编辑' }})</span>
-                <span v-else class="ml-2 text-gray-500 dark:text-gray-400">({{ t('modules.proxy.readonly') || '只读'
+                  t('modules.proxy.editable') }})</span>
+                <span v-else class="ml-2 text-gray-500 dark:text-gray-400">({{ t('modules.proxy.readonly')
                 }})</span>
             </span>
           </div>
@@ -1037,8 +1036,8 @@ onBeforeUnmount(() => {
             <div
               class="px-3 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#292945] flex-shrink-0">
             <span class="text-xs font-medium text-gray-600 dark:text-gray-400">
-              {{ t('common.response') }} - {{ t('modules.proxy.intercepted_response') || '拦截响应' }}
-                <span class="ml-2 text-green-600 dark:text-green-400">({{ t('modules.proxy.editable') || '可编辑'
+              {{ t('common.response') }} - {{ t('modules.proxy.intercepted_response') }}
+                <span class="ml-2 text-green-600 dark:text-green-400">({{ t('modules.proxy.editable')
                 }})</span>
             </span>
           </div>
@@ -1057,8 +1056,8 @@ onBeforeUnmount(() => {
           <div class="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
             <div class="text-center">
               <i class="bx bx-time-five text-3xl mb-3"></i>
-              <p>{{ t('modules.proxy.no_response_yet') || '暂无响应' }}</p>
-              <p class="text-xs mt-2">{{ t('modules.proxy.forward_request_first') || '请先放行请求以获取响应' }}</p>
+              <p>{{ t('modules.proxy.no_response_yet') }}</p>
+              <p class="text-xs mt-2">{{ t('modules.proxy.forward_request_first') }}</p>
             </div>
           </div>
         </div>
@@ -1069,11 +1068,11 @@ onBeforeUnmount(() => {
     <div v-else class="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
         <div class="text-center max-w-md">
         <i class="bx bx-intersect text-4xl mb-4"></i>
-          <h3 class="text-lg font-medium mb-2">{{ t('modules.proxy.no_item_selected') || '未选择拦截项' }}</h3>
+          <h3 class="text-lg font-medium mb-2">{{ t('modules.proxy.no_item_selected') }}</h3>
           <p class="text-sm mb-4">
-            {{ interceptQueue.length > 0 ? (t('modules.proxy.select_item_hint') || '请从上方队列中选择一个拦截项') : (interceptEnabled
-              ? (t('modules.proxy.intercept_waiting_hint') || '当有请求被拦截时，将在队列中显示') :
-              (t('modules.proxy.enable_intercept_hint') || '请启用拦截功能')) }}
+            {{ interceptQueue.length > 0 ? t('modules.proxy.select_item_hint') : (interceptEnabled
+              ? t('modules.proxy.intercept_waiting_hint') :
+              t('modules.proxy.enable_intercept_hint')) }}
         </p>
 
           <!-- 测试提示 -->
@@ -1081,7 +1080,7 @@ onBeforeUnmount(() => {
             class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
             <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
               <i class="bx bx-info-circle mr-1"></i>
-              {{ t('modules.proxy.test_intercept') || '测试拦截功能' }}
+              {{ t('modules.proxy.test_intercept') }}
             </h4>
             <div class="text-xs text-blue-700 dark:text-blue-300 space-y-1">
               <p>1. 确保浏览器代理设置为 ChYing 代理地址（点击顶部浏览器图标可自动配置）</p>

@@ -106,10 +106,10 @@ function fuzz() {
     requestData.value = '';
     responseData.value = '';
     alertType.value = "info";
-    alertContent.value = target + " 正在扫描中...";
+    alertContent.value = t('modules.plugins.fuzz.notifications.scanning', { target });
     percentage.value = 0;
 
-    message.success(target + " 开始扫描");
+    message.success(t('modules.plugins.fuzz.notifications.scan_started', { target }));
 
     Fuzz(target, formValue.value.checkboxGroupValue, formValue.value.path.toString().trim()).then((result: string) => {
       isScanning.value = false;
@@ -118,7 +118,7 @@ function fuzz() {
         alertType.value = "success";
         // alertContent.value = target + " 扫描完成";
         // percentage.value = 100;
-        message.success(target + " 扫描完成");
+        message.success(t('modules.plugins.fuzz.notifications.scan_completed', { target }));
       } else {
         alertType.value = "error";
         alertContent.value = target + " " + result;
@@ -127,11 +127,11 @@ function fuzz() {
     }).catch((error: any) => {
       isScanning.value = false;
       alertType.value = "error";
-      alertContent.value = "扫描出错: " + error;
-      message.error("扫描出错: " + error);
+      alertContent.value = t('modules.plugins.fuzz.notifications.scan_error', { error });
+      message.error(t('modules.plugins.fuzz.notifications.scan_error', { error }));
     });
   } else {
-    message.warning("请输入目标URL");
+    message.warning(t('modules.plugins.fuzz.notifications.enter_target_url'));
   }
 }
 
@@ -139,9 +139,9 @@ function fuzz() {
 function fuzzStop() {
   FuzzStop().then(() => {
     isScanning.value = false;
-    message.success(formValue.value.targetUrl.toString().trim() + " 扫描已停止");
+    message.success(t('modules.plugins.fuzz.notifications.scan_stopped', { target: formValue.value.targetUrl.toString().trim() }));
   }).catch((error: any) => {
-    message.error("停止扫描失败: " + error);
+    message.error(t('modules.plugins.fuzz.notifications.stop_scan_failed', { error }));
   });
 }
 
@@ -152,19 +152,19 @@ function handleCheckedChange(checked: boolean) {
     const proxyValue = proxyInput.value.trim();
     if (proxyValue) {
       SetProxy(proxyValue).then(() => {
-        message.success("代理设置成功: " + proxyValue);
+        message.success(t('modules.plugins.fuzz.notifications.proxy_set_success', { proxy: proxyValue }));
       }).catch((error: any) => {
-        message.error("代理设置失败: " + error);
+        message.error(t('modules.plugins.fuzz.notifications.proxy_set_failed', { error }));
       });
     } else {
-      message.warning("请输入有效的代理地址");
+      message.warning(t('modules.plugins.fuzz.notifications.enter_valid_proxy'));
       checkedRef.value = false;
     }
   } else {
     SetProxy("").then(() => {
-      message.warning("代理已关闭");
+      message.warning(t('modules.plugins.fuzz.notifications.proxy_disabled'));
     }).catch((error: any) => {
-      message.error("关闭代理失败: " + error);
+      message.error(t('modules.plugins.fuzz.notifications.proxy_disable_failed', { error }));
     });
   }
 }
@@ -226,7 +226,7 @@ const fuzzScannerColumns = computed<HttpTrafficColumn<any>[]>(() => [
   },
   {
     id: 'method',
-    name: '方法',
+    name: t('modules.plugins.fuzz.columns.method'),
     width: 80,
     cellRenderer: ({ item }) => h('span', {
       class: [
@@ -243,7 +243,7 @@ const fuzzScannerColumns = computed<HttpTrafficColumn<any>[]>(() => [
   },
   {
     id: 'status',
-    name: '状态码',
+    name: t('modules.plugins.fuzz.columns.status_code'),
     width: 100,
     cellRenderer: ({ item }) => h('span', {
       class: [
@@ -260,7 +260,7 @@ const fuzzScannerColumns = computed<HttpTrafficColumn<any>[]>(() => [
   },
   {
     id: 'size',
-    name: '长度',
+    name: t('modules.plugins.fuzz.columns.length'),
     width: 100,
     cellRenderer: ({ item }) => h('span', {
       class: 'text-sm font-mono text-gray-700 dark:text-gray-300'
@@ -374,7 +374,7 @@ onBeforeUnmount(() => {
                 {{ t('modules.plugins.fuzz.target_url') }}
               </label>
               <div class="flex">
-                <input v-model="formValue.targetUrl" type="text" placeholder="请输入目标URL，例如：https://example.com"
+                <input v-model="formValue.targetUrl" type="text" :placeholder="t('modules.plugins.fuzz.target_url_placeholder')"
                   class="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-[#282838] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300 shadow-inner" spellcheck="false"/>
               </div>
             </div>

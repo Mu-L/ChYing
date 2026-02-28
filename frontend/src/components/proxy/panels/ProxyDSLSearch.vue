@@ -58,11 +58,11 @@ const dslExamples = [
 ];
 
 // 默认建议列表（空输入时显示）
-const defaultSuggestions = [
-  { value: 'status == "200"', description: '查找所有成功请求', type: 'example' },
-  { value: 'contains(path, "/api/")', description: '查找API路径', type: 'example' },
-  { value: 'method == "POST"', description: '查找POST请求', type: 'example' },
-];
+const defaultSuggestions = computed(() => [
+  { value: 'status == "200"', description: t('modules.proxy.dsl.default_find_success'), type: 'example' },
+  { value: 'contains(path, "/api/")', description: t('modules.proxy.dsl.default_find_api'), type: 'example' },
+  { value: 'method == "POST"', description: t('modules.proxy.dsl.default_find_post'), type: 'example' },
+]);
 
 // 上下文类型
 type InputContext = 'empty' | 'field' | 'after_field' | 'after_operator' | 'after_func_open' | 'after_comma' | 'in_string' | 'after_close';
@@ -153,7 +153,7 @@ const updateSuggestions = () => {
         ...searchHistory.value.slice(0, 3).map(h => ({
           value: h, description: t('modules.proxy.dsl.previous_search'), type: 'history'
         })),
-        ...defaultSuggestions,
+        ...defaultSuggestions.value,
         ...builtinFunctions,
       ];
       break;
@@ -181,17 +181,17 @@ const updateSuggestions = () => {
     case 'after_operator':
       // 运算符后 → 提示带引号的值模板
       result = [
-        { value: '"200"', description: '状态码 200', type: 'value' },
-        { value: '"GET"', description: 'GET 方法', type: 'value' },
-        { value: '"POST"', description: 'POST 方法', type: 'value' },
-        { value: '"application/json"', description: 'JSON 类型', type: 'value' },
+        { value: '"200"', description: t('modules.proxy.dsl.status_200'), type: 'value' },
+        { value: '"GET"', description: t('modules.proxy.dsl.method_get'), type: 'value' },
+        { value: '"POST"', description: t('modules.proxy.dsl.method_post'), type: 'value' },
+        { value: '"application/json"', description: t('modules.proxy.dsl.json_type'), type: 'value' },
       ];
       break;
 
     case 'after_comma':
       // 函数逗号后 → 提示带引号的值
       result = [
-        { value: ' "', description: '输入匹配值...', type: 'value' },
+        { value: ' "', description: t('modules.proxy.dsl.enter_match_value'), type: 'value' },
       ];
       break;
 
@@ -400,7 +400,7 @@ onMounted(() => {
   }
   
   // 初始化建议列表为默认建议
-  suggestions.value = defaultSuggestions;
+  suggestions.value = defaultSuggestions.value;
 });
 
 // 监听输入变化

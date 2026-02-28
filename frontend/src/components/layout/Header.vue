@@ -56,7 +56,7 @@ const launchChrome = () => {
     })
     .catch((error: Error) => {
       console.error('启动Chrome浏览器失败:', error);
-      alert('启动Chrome浏览器失败: ' + error.message);
+      alert(t('layout.header.chrome_launch_failed') + error.message);
     })
     .finally(() => {
       isLaunchingBrowser.value = false;
@@ -295,7 +295,7 @@ onMounted(() => {
       <div v-if="showChromeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
         <div class="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-md overflow-hidden">
           <div class="flex justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">启动Chrome浏览器</h3>
+            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('layout.header.chrome_dialog_title') }}</h3>
             <button 
               @click="showChromeModal = false" 
               class="btn btn-icon text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 w-6 h-6"
@@ -335,7 +335,7 @@ onMounted(() => {
                 :disabled="isLaunchingBrowser"
               >
                 <i class="bx bx-loader bx-spin mr-1" v-if="isLaunchingBrowser"></i>
-                {{ isLaunchingBrowser ? '启动中...' : '启动Chrome' }}
+                {{ isLaunchingBrowser ? t('layout.header.launching') : t('layout.header.launch_chrome') }}
               </button>
             </div>
           </div>

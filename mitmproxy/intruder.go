@@ -20,7 +20,7 @@ type PayloadItem struct {
 	ID         int64            `json:"id"`         // 条目ID
 	Type       string           `json:"type"`       // 条目类型
 	Items      []string         `json:"items"`      // 条目内容数组
-	Processing ProcessingConfig `json:"processing"` // 处理配置，包含规则和编码设置
+	Processing ProcessingConfig `json:"Processing"` // 处理配置，包含规则和编码设置
 }
 
 // ProcessingConfig 载荷处理配置
@@ -58,7 +58,7 @@ func Intruder(target string, req string, payloads []PayloadItem, attackType stri
 
 // sniper 模式 设置每个 payload 位置都使用相同的 fuzz 文本 跑一遍
 func sniper(target string, req string, payloadItem []PayloadItem, uuid string) {
-	positions := getPositions(req)
+	positions := GetPositions(req)
 	ch := make(chan struct{}, 20)
 
 	payloads := []string{}
@@ -73,7 +73,7 @@ func sniper(target string, req string, payloadItem []PayloadItem, uuid string) {
 		for _, payload := range payloads {
 			_req := req // req 不能改变
 			// 处理payload
-			processedPayload := processing(payload, payloadItem[0].Processing.Rules)
+			processedPayload := Processing(payload, payloadItem[0].Processing.Rules)
 
 			// 构建完整的 payload 数组，包含所有位置的值
 			allPayloads := make([]string, len(positions))
@@ -158,7 +158,7 @@ func sniper(target string, req string, payloadItem []PayloadItem, uuid string) {
 
 // batteringRam 模式设置的所有 payload 位置使用同一份 fuzz 文本
 func batteringRam(target string, req string, payloadItem []PayloadItem, uuid string) {
-	positions := getPositions(req)
+	positions := GetPositions(req)
 	ch := make(chan struct{}, 20)
 
 	payloads := []string{}
@@ -170,7 +170,7 @@ func batteringRam(target string, req string, payloadItem []PayloadItem, uuid str
 		request := req // req 不能改变
 		// 这里是根据payload位置来进行对应的处理
 		for _, position := range positions {
-			payload = processing(payload, payloadItem[0].Processing.Rules)
+			payload = Processing(payload, payloadItem[0].Processing.Rules)
 			request = strings.Replace(request, position, payload, 1)
 		}
 
@@ -231,7 +231,7 @@ func batteringRam(target string, req string, payloadItem []PayloadItem, uuid str
 
 // pitchfork 模式 ，payload 一一对应
 func pitchfork(target string, req string, payloadItem []PayloadItem, uuid string) {
-	positions := getPositions(req)
+	positions := GetPositions(req)
 	ch := make(chan struct{}, 20)
 
 	words := make([][]string, len(payloadItem)) // 使用 len 而不是 0 作为切片长度
@@ -254,7 +254,7 @@ func pitchfork(target string, req string, payloadItem []PayloadItem, uuid string
 		request := req // req 不能改变
 		// 这里是根据payload位置来进行对应的处理
 		for j, position := range positions {
-			_payload := processing(payload[j], payloadItem[j].Processing.Rules)
+			_payload := Processing(payload[j], payloadItem[j].Processing.Rules)
 			request = strings.Replace(request, position, _payload, 1)
 		}
 		ch <- struct{}{}
@@ -313,7 +313,7 @@ func pitchfork(target string, req string, payloadItem []PayloadItem, uuid string
 
 // clusterBomb 每个 payload 位置使用不同的 fuzz 文本
 func clusterBomb(target string, req string, payloadItem []PayloadItem, uuid string) {
-	positions := getPositions(req)
+	positions := GetPositions(req)
 	ch := make(chan struct{}, 20)
 
 	// 生成所有组合
@@ -389,7 +389,7 @@ func GenerateCombinations(items []PayloadItem) [][]string {
 		var processed []string
 		for _, s := range item.Items {
 			// 对每个字符串应用处理函数
-			processed = append(processed, processing(s, item.Processing.Rules))
+			processed = append(processed, Processing(s, item.Processing.Rules))
 		}
 		processedItems = append(processedItems, processed)
 	}
@@ -426,8 +426,8 @@ func backtrack(allItems [][]string, index int, current []string, result *[][]str
 	}
 }
 
-// getPositions 获取 payload 设置位置字符
-func getPositions(req string) []string {
+// GetPositions 获取 payload 设置位置字符
+func GetPositions(req string) []string {
 	re := regexp.MustCompile(`§(.*?)§`)          // 定义正则表达式 *? 表示非贪婪匹配模式，即尽可能少地匹配。
 	matches := re.FindAllStringSubmatch(req, -1) // 查找所有匹配项
 
@@ -438,8 +438,8 @@ func getPositions(req string) []string {
 	return result
 }
 
-// processing 对 payload 进行的处理，支持链式处理多个规则
-func processing(payload string, rules []ProcessingRule) string {
+// Processing 对 payload 进行的处理，支持链式处理多个规则
+func Processing(payload string, rules []ProcessingRule) string {
 	if rules == nil || len(rules) == 0 {
 		return payload
 	}

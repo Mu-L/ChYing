@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   message: string;
@@ -90,7 +93,7 @@ onBeforeUnmount(() => {
     <button 
       class="proxy-notification-close" 
       @click="closeNotification"
-      title="关闭"
+      :title="t('modules.proxy.notification_close')"
     >
       <i class="bx bx-x"></i>
     </button>

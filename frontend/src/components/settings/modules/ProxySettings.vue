@@ -542,7 +542,7 @@ const saveRegex = async () => {
               spellcheck="false"
               v-model="currentRegexValue"
               class="w-full h-48 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-[#32324c] shadow-sm px-3 py-2 text-gray-800 dark:text-gray-200 font-mono"
-              placeholder="输入正则表达式"
+              :placeholder="t('settings.regex_placeholder')"
             ></textarea>
             <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
               请输入有效的正则表达式

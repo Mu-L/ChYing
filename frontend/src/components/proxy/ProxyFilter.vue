@@ -260,7 +260,7 @@ watch(filterOptions, () => {
             {{ t('modules.proxy.filter.status') }}
             <span v-if="filterOptions.status.length > 0" class="panel-count">{{ filterOptions.status.length }}</span>
           </span>
-          <button class="panel-action-btn" @click="toggleAllStatusCodes" :title="filterOptions.status.length === filteredStatusCodes.length ? '取消全选' : '全选'">
+          <button class="panel-action-btn" @click="toggleAllStatusCodes" :title="filterOptions.status.length === filteredStatusCodes.length ? t('modules.proxy.filter_deselect_all_title') : t('modules.proxy.filter_select_all_title')">
             <i :class="filterOptions.status.length === filteredStatusCodes.length && filteredStatusCodes.length > 0 ? 'bx bx-checkbox-checked' : 'bx bx-checkbox'"></i>
           </button>
         </div>
@@ -268,7 +268,7 @@ watch(filterOptions, () => {
           v-model="filterOptions.statusSearch"
           type="text"
           class="proxy-filter-input panel-search"
-          placeholder="输入前缀匹配，如 20、30..."
+          :placeholder="t('modules.proxy.filter_status_search_placeholder')"
         />
         <div class="checkbox-list-compact">
           <div
@@ -283,7 +283,7 @@ watch(filterOptions, () => {
             <i v-if="filterOptions.status.includes(opt.code)" class="bx bx-check check-icon"></i>
           </div>
           <div v-if="filteredStatusCodes.length === 0" class="empty-hint">
-            {{ statusCodeOptions.length === 0 ? '暂无数据' : '无匹配的状态码' }}
+            {{ statusCodeOptions.length === 0 ? t('modules.proxy.filter_no_data') : t('modules.proxy.filter_no_match_status') }}
           </div>
         </div>
       </div>
@@ -305,7 +305,7 @@ watch(filterOptions, () => {
               <i :class="filterOptions.extensionMode === 'include' ? 'bx bx-show' : 'bx bx-hide'"></i>
               {{ filterOptions.extensionMode === 'include' ? 'Include' : 'Exclude' }}
             </button>
-            <button class="preset-btn" @click="applyPresetExcludeStatic" title="快速排除静态资源">
+            <button class="preset-btn" @click="applyPresetExcludeStatic" :title="t('modules.proxy.filter_exclude_static_title')">
               <i class="bx bx-bolt-circle"></i>
             </button>
           </div>

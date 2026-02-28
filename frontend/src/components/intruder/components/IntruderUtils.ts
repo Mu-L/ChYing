@@ -1,36 +1,31 @@
 // 定义有效载荷相关的工具函数
 import type { PayloadPosition, IntruderResult, AttackResult, IntruderTab } from '../../../types/intruder';
+import { i18n } from '@/i18n';
 
 export function useIntruderUtils() {
   // 统一的颜色定义
   const colors = [
-    { id: 'default', value: '#4f46e5', labelEn: 'Default (Purple)', labelZh: '默认 (紫色)' },
-    { id: 'red', value: '#ef4444', labelEn: 'Red', labelZh: '红色' },
-    { id: 'green', value: '#10b981', labelEn: 'Green', labelZh: '绿色' },
-    { id: 'blue', value: '#3b82f6', labelEn: 'Blue', labelZh: '蓝色' },
-    { id: 'yellow', value: '#f59e0b', labelEn: 'Yellow', labelZh: '黄色' },
-    { id: 'orange', value: '#f97316', labelEn: 'Orange', labelZh: '橙色' },
-    { id: 'teal', value: '#14b8a6', labelEn: 'Teal', labelZh: '青色' },
+    { id: 'default', value: '#4f46e5', labelKey: 'modules.intruder.default_color' },
+    { id: 'red', value: '#ef4444', labelKey: 'modules.intruder.red' },
+    { id: 'green', value: '#10b981', labelKey: 'modules.intruder.green' },
+    { id: 'blue', value: '#3b82f6', labelKey: 'modules.intruder.blue' },
+    { id: 'yellow', value: '#f59e0b', labelKey: 'modules.intruder.yellow' },
+    { id: 'orange', value: '#f97316', labelKey: 'modules.intruder.orange' },
+    { id: 'teal', value: '#14b8a6', labelKey: 'modules.intruder.teal' },
   ];
 
-  // 获取带英文标签的颜色选项
-  const getEnglishColorOptions = () => {
-    return colors.map(c => ({ id: c.id, value: c.value, label: c.labelEn }));
-  };
-
-  // 获取带中文标签的颜色选项
-  const getChineseColorOptions = () => {
-    return colors.map(c => ({ id: c.id, value: c.value, label: c.labelZh }));
-  };
-
-  // 根据语言获取本地化颜色选项
-  const getLocalizedColorOptions = (isEnglish = true) => {
-    return colors.map(c => ({ 
-      id: c.id, 
-      value: c.value, 
-      label: isEnglish ? c.labelEn : c.labelZh 
+  // 获取本地化颜色选项
+  const getLocalizedColorOptions = () => {
+    return colors.map(c => ({
+      id: c.id,
+      value: c.value,
+      label: i18n.global.t(c.labelKey)
     }));
   };
+
+  // 保留向后兼容的别名
+  const getEnglishColorOptions = () => getLocalizedColorOptions();
+  const getChineseColorOptions = () => getLocalizedColorOptions();
 
   // 为整个请求添加有效载荷标记
   const wrapSelectionInRequestWithPayloadMarker = (

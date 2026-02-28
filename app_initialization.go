@@ -15,6 +15,7 @@ import (
 	JieConf "github.com/yhy0/ChYing/pkg/Jie/conf"
 	"github.com/yhy0/ChYing/pkg/Jie/pkg/mode"
 	"github.com/yhy0/ChYing/pkg/db"
+	"github.com/yhy0/ChYing/pkg/mcpserver"
 	"github.com/yhy0/ChYing/pkg/qqwry"
 	"github.com/yhy0/ChYing/pkg/utils"
 	"github.com/yhy0/logging"
@@ -379,6 +380,13 @@ func (a *App) StepInitializationComplete() Result {
 
 	// 后台自动检查版本更新
 	go a.autoCheckForUpdates()
+
+	// 启动 MCP Server
+	mcpPort := conf.AppConf.MCPPort
+	if mcpPort <= 0 {
+		mcpPort = 9245
+	}
+	go mcpserver.StartHTTPServer(mcpPort)
 
 	progress.Success = true
 	logging.Logger.Infoln("✓ 系统初始化完成，ChYing 已准备就绪")

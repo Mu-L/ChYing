@@ -33,8 +33,9 @@
       "browse": "浏览",
       "next": "开始",
       "action": "操作",
-      "send_to_repeater": "发送到中继器",
-      "send_to_intruder": "发送到入侵者",
+      "create": "创建",
+      "send_to_repeater": "发送到 Repeater",
+      "send_to_intruder": "发送到 Intruder",
       "set_row_color": "设置行颜色",
       "title": "操作"
     },
@@ -87,20 +88,67 @@
         "selectAll": "全选所有行",
         "selectRow": "选择第 {id} 行"
       }
-
+    },
+    "request_response": {
+      "show_raw": "显示原始格式",
+      "format_body": "格式化 Body",
+      "toggle_word_wrap": "切换自动换行",
+      "copy_response": "复制响应",
+      "copy_request": "复制请求",
+      "render_error": "该内容无法渲染，请尝试其他视图模式"
+    },
+    "color_picker": {
+      "security_tools": "安全工具",
+      "danger": "危险",
+      "warning": "警告",
+      "safe": "安全",
+      "info": "信息",
+      "traffic_markers": "流量标记",
+      "authentication": "认证",
+      "static": "静态",
+      "sensitive": "敏感"
+    },
+    "empty_state": {
+      "default_title": "暂无数据",
+      "default_action": "刷新"
+    },
+    "confirm": {
+      "default_title": "确认操作",
+      "default_message": "确定要执行此操作吗？",
+      "default_confirm": "确认",
+      "default_cancel": "取消"
+    },
+    "tabs": {
+      "expand_group": "展开分组",
+      "collapse_group": "折叠分组",
+      "tab_count": "{count} 个标签",
+      "group": "分组",
+      "color": "颜色",
+      "create_new_group": "创建新分组",
+      "no_group": "无分组"
     },
     "error": {
       "stack_trace": "堆栈跟踪",
       "error_boundary_title": "{component} 出错",
-      "error_boundary_message": "出现错误。我们已收到通知并将查看问题。"
-    }
+      "error_boundary_message": "出现错误。我们已收到通知并将查看问题。",
+      "component_fallback": "组件"
+    },
+    "custom": "自定义",
+    "presets": "预设",
+    "history": "历史"
   },
   "layout": {
     "app": {
       "title": "承影"
     },
     "header": {
-      "title": "顶部栏"
+      "title": "顶部栏",
+      "chrome_launch_failed": "启动Chrome浏览器失败: ",
+      "chrome_dialog_title": "启动Chrome浏览器",
+      "proxy_address": "代理地址",
+      "chrome_proxy_hint": "Chrome将使用此代理地址并添加 --ignore-certificate-errors 参数启动",
+      "launching": "启动中...",
+      "launch_chrome": "启动Chrome"
     },
     "sidebar": {
       "title": "侧边栏"
@@ -110,6 +158,11 @@
       "memory": "内存",
       "scan_log_title": "事件日志",
       "system_status": "系统状态",
+      "fetching": "获取中...",
+      "fetch_failed": "获取失败",
+      "db_operation_failed": "数据库操作失败 [{operation}]: {error}",
+      "goroutines": "协程: {count}",
+      "no_details": "无具体详情",
       "logs": {
         "system_started": "系统已启动",
         "module_loaded": "模块已加载",
@@ -266,7 +319,17 @@
         "select_request": "选择一个请求查看详情",
         "title": "内容",
         "path": "路径",
-        "requests": "请求"
+        "requests": "请求",
+        "node_type": "类型",
+        "host": "主机",
+        "directory": "目录",
+        "file": "文件",
+        "api_count": "API数量",
+        "internal_ip_count": "内部IP数量",
+        "subdomain_count": "子域名数量",
+        "param_count": "参数数量",
+        "ip_info": "IP信息",
+        "fingerprint_info": "指纹信息"
       },
       "site_map": {
         "tab_content": "站点地图标签内容将在此处显示。",
@@ -323,6 +386,36 @@
       "proxy_listener": "代理监听",
       "intercept": "拦截",
       "history": "历史",
+      "selected": "选中",
+      "request_type": "请求",
+      "response_type": "响应",
+      "includes_request": "(含请求)",
+      "clear_queue": "清空队列",
+      "queue_stats_text": "队列: {total} 项 ({requests} 请求, {responses} 响应)",
+      "forwarded_all": "已放行所有 {total} 个拦截项目",
+      "forwarded_partial": "已放行 {success} 个项目，{failed} 个失败",
+      "final_request": "最终请求",
+      "intercepted_request": "拦截请求",
+      "intercepted_response": "拦截响应",
+      "editable": "可编辑",
+      "readonly": "只读",
+      "no_response_yet": "暂无响应",
+      "forward_request_first": "请先放行请求以获取响应",
+      "request_forwarded_waiting": "请求已放行，等待响应...",
+      "forward_error": "放行失败",
+      "transaction_complete": "事务已完成",
+      "response_dropped": "响应已丢弃",
+      "drop_error": "丢弃失败",
+      "test_intercept_step1": "1. 确保浏览器代理设置为 ChYing 代理地址（点击顶部浏览器图标可自动配置）",
+      "test_intercept_step2": "2. 访问任意网站（如 httpbin.org/get）",
+      "test_intercept_step3": "3. 请求将出现在上方队列中等待处理",
+      "test_intercept_step4": "4. 可以修改请求内容，然后点击 Forward 或 Drop",
+      "filter_select_all": "全选",
+      "filter_deselect_all": "取消全选",
+      "filter_status_placeholder": "搜索状态码...",
+      "clear_memory": "清理内存",
+      "memory_cleared": "内存已清理",
+      "resize_panel": "拖动调整面板大小",
       "tabs": {
         "history": "历史记录",
         "intercept": "拦截"
@@ -370,10 +463,26 @@
         "search_error": "查询错误: {error}",
         "no_results": "未找到匹配结果",
         "results_shown": "显示 {count} 个匹配结果",
-        "filter_cleared": "已清除过滤器，显示所有历史记录"
+        "filter_cleared": "已清除过滤器，显示所有历史记录",
+        "default_find_success": "查找所有成功请求",
+        "default_find_api": "查找API路径",
+        "default_find_post": "查找POST请求",
+        "status_200": "状态码 200",
+        "method_get": "GET 方法",
+        "method_post": "POST 方法",
+        "json_type": "JSON 类型",
+        "enter_match_value": "输入匹配值...",
+        "previous_search": "上次搜索",
+        "unbalanced_quotes": "引号不平衡",
+        "field_status_reason": "状态描述"
       },
-      "control": {},
-    
+      "control": {
+        "filter": "筛选",
+        "clear": "清除",
+        "send_to": "发送到:",
+        "send_to_repeater_tooltip": "发送到 Repeater (Ctrl+R)",
+        "send_to_intruder_tooltip": "发送到 Intruder (Ctrl+I)"
+      },
       "filter": {
         "title": "筛选",
         "apply": "应用",
@@ -467,20 +576,90 @@
       "select_item": "选择一个项目查看详情",
       "forward_response": "放行响应",
       "forward_request": "放行请求",
-      "settings": "代理设置"
+      "settings": "代理设置",
+      "intercept_toggle_failed": "拦截状态切换失败",
+      "all_history_cleared": "所有历史记录已清空（数据库+内存）",
+      "all_history_clear_failed": "清空所有历史记录失败",
+      "memory_data_cleaned": "内存数据已清理（数据库数据保留）",
+      "memory_data_clean_failed": "清理内存数据失败",
+      "filtered_by_host": "已筛选主机: {host}",
+      "filtered_by_method": "已筛选方法: {method}",
+      "all_filters_cleared": "已清除所有筛选条件",
+      "traffic_stats": "流量统计",
+      "traffic_total": "总计: {total}",
+      "loading_request_response": "正在加载请求和响应数据...",
+      "status_sent": "已发送",
+      "request_sent_status": "请求已发送",
+      "unknown_url": "(未知)",
+      "copy_url": "复制 URL",
+      "copy_host": "复制 Host",
+      "show_host_only": "仅显示此主机",
+      "cancel_host_filter": "取消主机筛选",
+      "show_method_only": "仅显示 {method} 请求",
+      "cancel_method_filter": "取消方法筛选",
+      "clear_all_filters": "清除所有筛选",
+      "cleanup_actions": "清理操作",
+      "clear_all_history_db_mem": "清空所有历史记录",
+      "db_and_memory": "数据库+内存",
+      "clean_memory_only": "仅清理内存数据",
+      "keep_database": "保留数据库",
+      "select_color_marker": "选择颜色标记",
+      "remove_color": "移除颜色",
+      "set_color_to": "设置为{color}色",
+      "filter_select_all_title": "全选",
+      "filter_deselect_all_title": "取消全选",
+      "filter_status_search_placeholder": "输入前缀匹配，如 20、30...",
+      "filter_no_data": "暂无数据",
+      "filter_no_match_status": "无匹配的状态码",
+      "filter_extension": "扩展名",
+      "filter_exclude_static_title": "快速排除静态资源",
+      "toggle_rule_enabled": "启用或禁用此规则",
+      "notification_close": "关闭"
     },
     "repeater": {
-      "title": "中继器",
+      "title": "Repeater",
       "description": "手动重复和修改HTTP请求",
       "send": "发送",
       "new_tab": "新建标签页",
+      "clone": "克隆",
+      "send_to_intruder": "发送到 Intruder",
+      "new_tab_tooltip": "新建标签页 (Ctrl+T)",
+      "clone_tooltip": "克隆标签页 (Ctrl+D)",
+      "send_to_intruder_tooltip": "发送到 Intruder (Ctrl+I)",
+      "no_request_open": "暂无请求",
+      "create_tab_hint": "创建新标签页开始发送请求",
       "request": "请求",
       "response": "响应",
       "history": "历史",
-      "sending": "正在发送请求..."
+      "sending": "正在发送请求...",
+      "create_new_group": "创建新分组",
+      "new_group": "新分组",
+      "modal": {
+        "title": "新建请求",
+        "url_label": "目标URL",
+        "url_placeholder": "输入目标URL",
+        "method_label": "请求方法",
+        "headers_label": "请求头",
+        "headers_placeholder": "每行一个请求头, 格式: Key: Value",
+        "body_label": "请求体",
+        "body_placeholder": "输入请求体内容",
+        "url_required": "请输入目标URL",
+        "create": "创建",
+        "cancel": "取消",
+        "default_purple": "默认 (紫色)",
+        "red": "红色",
+        "green": "绿色",
+        "blue": "蓝色",
+        "yellow": "黄色",
+        "orange": "橙色",
+        "cyan": "青色",
+        "enter_name": "请输入名称",
+        "name_label": "名称",
+        "color_label": "颜色"
+      }
     },
     "intruder": {
-      "title": "入侵者",
+      "title": "Intruder",
       "description": "对Web应用程序进行自动化攻击",
       "attack": "# {number}",
       "attack_type": "攻击类型",
@@ -494,6 +673,8 @@
       "clear_positions": "清除 §位置§",
       "auto_positions": "自动标记 §位置§",
       "add_position": "添加 §位置§",
+      "add_position_tooltip": "将选中文本标记为载荷位置",
+      "clear_all_tooltip": "清除所有载荷位置",
       "payload_sets": "载荷集合",
       "payload_type": "载荷类型",
       "payload_options": "载荷选项",
@@ -503,10 +684,10 @@
       "payload_type_brute_force": "暴力破解",
       "payload_type_custom": "自定义",
       "attack_types": {
-        "sniper": "狙击手",
-        "battering-ram": "攻城锤",
-        "pitchfork": "草叉",
-        "cluster-bomb": "集束炸弹"
+        "sniper": "Sniper",
+        "battering-ram": "Battering Ram",
+        "pitchfork": "Pitchfork",
+        "cluster-bomb": "Cluster Bomb"
       },
       "config_panel": "攻击配置",
       "processing_panel": "载荷处理",
@@ -577,7 +758,41 @@
       "replace": "替换",
       "use_regex": "使用正则表达式",
       "no_items": "无项目",
-      "no_rules": "尚未定义规则"
+      "no_rules": "尚未定义规则",
+      "group_modal": {
+        "title": "创建分组",
+        "name_label": "分组名称",
+        "name_placeholder": "输入分组名称",
+        "color_label": "分组颜色",
+        "name_required": "请输入分组名称",
+        "create": "创建",
+        "cancel": "取消"
+      },
+      "processing": {
+        "add_prefix": "在载荷前添加前缀",
+        "add_suffix": "在载荷后添加后缀",
+        "match_replace": "匹配并替换载荷内容",
+        "substring": "提取子字符串",
+        "reverse": "反转载荷",
+        "url_encode": "URL编码",
+        "url_decode": "URL解码",
+        "base64_encode": "Base64编码",
+        "base64_decode": "Base64解码",
+        "hash_md5": "MD5哈希",
+        "hash_sha256": "SHA-256哈希",
+        "to_uppercase": "转为大写",
+        "to_lowercase": "转为小写",
+        "to_capitalize": "首字母大写",
+        "modify_case": "修改大小写",
+        "hash": "哈希",
+        "start_index": "开始索引",
+        "length": "长度",
+        "case_type": "大小写类型",
+        "hash_type": "哈希类型",
+        "please_select": "请选择...",
+        "substring_desc": "从索引 {start} 取 {length} 个字符",
+        "reverse_substring_desc": "从索引 {start} 取 {length} 个字符并反转"
+      }
     },
     "decoder": {
       "title": "编/解码器",
@@ -679,7 +894,8 @@
         "payload_nbf": "nbf（生效时间）：在此时间之前，JWT不得被接受",
         "payload_iat": "iat（发行时间）：JWT的发行时间",
         "payload_jti": "jti（JWT ID）：JWT的唯一标识符",
-        "signature_tooltip": "密钥确保JWT的完整性和安全性。风险包括密钥泄露攻击和密钥混淆攻击。"
+        "signature_tooltip": "密钥确保JWT的完整性和安全性。风险包括密钥泄露攻击和密钥混淆攻击。",
+        "brute_progress": "爆破进度"
       },
       "fuzz": {
         "title": "目录扫描",
@@ -690,7 +906,27 @@
         "stop_scan": "停止扫描",
         "scan_progress": "扫描进度",
         "no_scan_results": "暂无扫描结果",
-        "select_scan_result": "选择一条扫描结果以查看详情"
+        "select_scan_result": "选择一条扫描结果以查看详情",
+        "notifications": {
+          "scanning": "{target} 正在扫描中...",
+          "scan_started": "{target} 开始扫描",
+          "scan_completed": "{target} 扫描完成",
+          "scan_error": "扫描出错: {error}",
+          "enter_target_url": "请输入目标URL",
+          "scan_stopped": "{target} 扫描已停止",
+          "stop_scan_failed": "停止扫描失败: {error}",
+          "proxy_set_success": "代理设置成功: {proxy}",
+          "proxy_set_failed": "代理设置失败: {error}",
+          "enter_valid_proxy": "请输入有效的代理地址",
+          "proxy_disabled": "代理已关闭",
+          "proxy_disable_failed": "关闭代理失败: {error}"
+        },
+        "columns": {
+          "method": "方法",
+          "status_code": "状态码",
+          "length": "长度"
+        },
+        "target_url_placeholder": "请输入目标URL，例如：https://example.com"
       },
       "xss": {
         "title": "XSS",
@@ -1084,6 +1320,8 @@
     "sensitive_parameters": "敏感参数列表",
     "add_regex": "添加",
     "edit_regex": "编辑正则表达式",
+    "regex_placeholder": "输入正则表达式",
+    "regex_invalid_hint": "请输入有效的正则表达式",
     "ai": {
       "title": "AI 助手",
       "description": "配置 Claude AI 助手，用于安全分析和自动化任务。",
@@ -1219,16 +1457,77 @@
       "delete_confirm_message": "确定要删除项目 \"{name}\" 吗？",
       "delete_warning": "此操作将永久删除项目数据，无法恢复。",
       "delete_success": "项目删除成功",
-      "delete_failed": "删除项目失败"
+      "delete_failed": "删除项目失败",
+      "init_preparing": "准备开始...",
+      "init_starting": "正在启动初始化...",
+      "init_base_components": "正在初始化基础组件...",
+      "init_loading_config": "正在加载配置文件...",
+      "init_connecting_db": "正在连接数据库...",
+      "init_verifying_schema": "正在验证数据库模式...",
+      "init_starting_proxy": "正在启动代理服务器...",
+      "init_loading_data": "正在加载项目数据...",
+      "init_completing": "正在完成初始化...",
+      "init_done": "初始化完成，正在跳转...",
+      "app_starting": "承影 正在启动",
+      "app_starting_desc": "请稍候，正在为您准备安全测试环境...",
+      "literary_quote": "将旦昧爽之交，日夕昏明之际，北面而察之，淡淡焉若有物存，莫识其状。其所触也，窃窃然有声，经物而物不疾也。",
+      "literary_source": "—— 《列子·汤问》",
+      "project_actions": "项目操作",
+      "select_action": "选择要执行的操作",
+      "open_existing": "打开现有项目",
+      "open_existing_desc": "从已有项目中选择",
+      "create_new": "创建新项目",
+      "create_new_desc": "创建全新的项目",
+      "start_temp": "启动临时项目",
+      "start_temp_desc": "快速启动，自动保存",
+      "select_project": "选择项目",
+      "project_count": "{count} 个项目",
+      "local_tag": "本地",
+      "request_count": "{count} 请求",
+      "no_projects_found": "没有找到项目",
+      "create_first": "请先创建一个新项目",
+      "create_new_project": "创建新项目",
+      "project_name_label": "项目名称",
+      "project_name_input_placeholder": "请输入新项目名称...",
+      "project_name_hint": "项目名称将用于标识您的测试项目",
+      "temp_project_info": "临时项目说明",
+      "temp_project_desc": "临时项目会自动创建带时间戳的数据库文件，数据会被保存。适合快速测试使用。",
+      "quick_start": "快速启动",
+      "auto_save": "自动保存",
+      "select_action_prompt": "请选择操作",
+      "select_action_hint": "从左侧选择要执行的项目操作"
     }
   },
   "scanLog": {
     "title": "扫描日志",
+    "panel": {
+      "title": "事件日志",
+      "no_data": "暂无日志数据",
+      "loading": "加载扫描日志中...",
+      "log_id": "日志ID:",
+      "target_url": "目标URL:",
+      "vuln_type": "漏洞类型:",
+      "http_status": "HTTP状态:",
+      "response_length": "响应长度:",
+      "payload": "载荷:",
+      "description": "描述:",
+      "evidence": "证据:",
+      "columns": {
+        "time": "时间",
+        "level": "级别",
+        "module": "模块:",
+        "message": "消息"
+      }
+    },
     "statistics": {
       "status": "状态分布"
     },
     "filter": {
-      "title": "过滤器"
+      "title": "过滤器",
+      "search": "搜索",
+      "search_placeholder": "搜索URL、模块、漏洞类型等...",
+      "targetHost": "目标主机",
+      "moduleTypes": "模块类型"
     }
   },
   "vulnerability": {
@@ -1239,7 +1538,6 @@
     "no_vulnerabilities": "未发现漏洞",
     "select_to_view_details": "选择一个漏洞查看详情",
     "confirm_clear": "确认清空所有漏洞数据？",
-    
     "search_keyword": "搜索关键词",
     "search_placeholder": "按漏洞类型、目标、描述、插件等搜索...",
     "target_host": "目标主机",
@@ -1250,7 +1548,6 @@
     "date_range": "日期范围",
     "start_date": "开始日期",
     "end_date": "结束日期",
-    
     "target": "目标",
     "ip": "IP地址",
     "method": "HTTP方法",
@@ -1258,13 +1555,20 @@
     "payload": "载荷",
     "description": "描述",
     "curl_command": "cURL命令",
-    
     "total_vulnerabilities": "漏洞总数",
     "recent_24h": "最近24小时",
     "risk_discovery_rate": "风险发现率",
     "level_distribution": "风险等级分布",
     "top_plugins": "插件排行",
-    "top_types": "漏洞类型排行"
+    "top_types": "漏洞类型排行",
+    "columns": {
+      "risk_level": "风险等级",
+      "vuln_type": "漏洞类型",
+      "target": "目标",
+      "plugin": "插件",
+      "found_time": "发现时间",
+      "description": "描述"
+    }
   },
   "claude": {
     "title": "AI 安全助手",
@@ -1368,8 +1672,7 @@
     },
     "input": {
       "placeholder": "询问任何关于安全测试的问题...",
-      "send": "发送",
-      "stop": "停止"
+      "hint": "按 Enter 发送，Shift+Enter 换行"
     },
     "actions": {
       "newChat": "新对话",
@@ -1423,13 +1726,141 @@
       "listVulns": "显示已发现的漏洞",
       "fingerprints": "检测到了哪些技术？"
     },
-    "input": {
-      "placeholder": "询问任何关于安全测试的问题...",
-      "hint": "按 Enter 发送，Shift+Enter 换行"
-    },
     "prefill": {
       "analyzeTraffic": "请分析以下 {count} 条 HTTP 流量记录（ID: {ids}）。查找潜在的安全漏洞、敏感信息泄露和可疑模式。",
       "selectedTraffic": "已选择 {count} 条流量记录"
+    }
+  },
+  "scan_target": {
+    "title": "扫描目标管理",
+    "total": "总计: {count}",
+    "today": "今日: {count}",
+    "scheduler": "调度器",
+    "scheduler_running": "运行中",
+    "scheduler_stopped": "已停止",
+    "start_scheduler": "启动",
+    "stop_scheduler": "停止",
+    "start_scheduler_failed": "启动调度器失败: {error}",
+    "stop_scheduler_failed": "停止调度器失败: {error}",
+    "add_target": "添加目标",
+    "batch_add": "批量添加",
+    "no_targets": "暂无扫描目标",
+    "add_first_target": "添加第一个目标",
+    "high_priority": "高优先级",
+    "scan_progress": "扫描进度",
+    "found_hosts": "发现主机",
+    "found_ports": "开放端口",
+    "found_vulns": "发现漏洞",
+    "found_dirs": "发现目录",
+    "start_scan": "开始扫描",
+    "pause_scan": "暂停扫描",
+    "retry_scan": "重新扫描",
+    "pagination": {
+      "showing": "显示 {from} 到 {to} 项，共 {total} 项",
+      "prev": "上一页",
+      "next": "下一页"
+    },
+    "dialog": {
+      "add_title": "添加扫描目标",
+      "batch_title": "批量添加扫描目标",
+      "detail_title": "扫描目标详情",
+      "target_name": "目标名称 *",
+      "target_name_placeholder": "输入目标名称",
+      "target_type": "目标类型 *",
+      "target_address": "目标地址 *",
+      "target_address_placeholder": "输入URL、域名、IP地址或CIDR",
+      "description": "描述",
+      "description_placeholder": "输入目标描述",
+      "priority": "优先级",
+      "schedule_type": "调度类型",
+      "target_list": "目标列表 *",
+      "target_list_placeholder": "每行一个目标，例如：\nhttps://example.com\n192.168.1.1\n10.0.0.0/24",
+      "target_list_hint": "每行输入一个目标地址",
+      "batch_add_btn": "批量添加"
+    },
+    "detail": {
+      "basic_info": "基本信息",
+      "execution_info": "执行信息",
+      "name": "名称:",
+      "type": "类型:",
+      "status": "状态:",
+      "priority": "优先级:",
+      "start_time": "开始时间:",
+      "end_time": "完成时间:",
+      "duration": "持续时间:",
+      "progress": "进度:",
+      "target_address": "目标地址",
+      "scan_results": "扫描结果",
+      "error_info": "错误信息"
+    },
+    "filter": {
+      "status": "状态:",
+      "type": "类型:",
+      "search": "搜索:",
+      "all": "全部",
+      "search_placeholder": "搜索目标名称或地址..."
+    },
+    "status": {
+      "pending": "待扫描",
+      "running": "扫描中",
+      "completed": "已完成",
+      "failed": "失败",
+      "cancelled": "已取消",
+      "paused": "暂停"
+    },
+    "type": {
+      "single": "单个URL",
+      "domain": "域名",
+      "subnet": "子网",
+      "cidr": "CIDR",
+      "batch": "批量目标"
+    },
+    "priority": {
+      "highest": "最高",
+      "high": "高",
+      "medium": "中",
+      "low": "低",
+      "lowest": "最低"
+    },
+    "schedule": {
+      "once": "立即执行",
+      "daily": "每日",
+      "weekly": "每周",
+      "monthly": "每月"
+    },
+    "duration": {
+      "seconds": "{n}秒",
+      "minutes": "{m}分{s}秒",
+      "hours": "{h}时{m}分"
+    },
+    "local_user": "本地用户",
+    "add_failed": "添加失败: {error}",
+    "enter_target_list": "请输入目标列表",
+    "batch_add_failed": "批量添加失败: {error}",
+    "confirm_delete": "确定要删除扫描目标 \"{name}\" 吗？",
+    "delete_failed": "删除失败: {error}",
+    "update_status_failed": "更新状态失败: {error}",
+    "hosts": "主机",
+    "ports": "端口",
+    "vulns": "漏洞",
+    "dirs": "目录"
+  },
+  "store": {
+    "vulnerability": {
+      "unknown_type": "未知类型",
+      "unknown_plugin": "未知插件"
+    },
+    "claude": {
+      "create_session_empty": "创建会话失败：返回数据为空",
+      "create_session_no_id": "创建会话失败：session_id 为空",
+      "no_active_session": "没有活动会话",
+      "unknown_error": "未知错误"
+    }
+  },
+  "utils": {
+    "copy": {
+      "copied": "已复制到剪贴板",
+      "copy_failed": "复制失败"
     }
   }
 }

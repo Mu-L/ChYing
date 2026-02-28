@@ -74,7 +74,7 @@ onMounted(() => {
       <div class="p-6 border-b border-gray-200 dark:border-gray-700">
         <h1 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
           <i class="bx bx-cog mr-3 text-2xl text-blue-500"></i>
-          {{ t('settings.title', '设置') }}
+          {{ t('settings.title') }}
         </h1>
       </div>
       

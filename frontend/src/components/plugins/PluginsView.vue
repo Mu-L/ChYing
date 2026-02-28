@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import JwtAnalyzer from './modules/JwtAnalyzer.vue';
 import FuzzScanner from './modules/FuzzScanner.vue';
@@ -32,7 +32,7 @@ const popOutAllPlugins = async () => {
 };
 
 // 插件列表
-const plugins = [
+const plugins = computed(() => [
   {
     id: 'jwt',
     name: t('modules.plugins.jwt_analyzer.title'),
@@ -47,13 +47,13 @@ const plugins = [
   },
   {
     id: 'auth',
-    name: t('modules.plugins.auth_checker.title', '越权检测'),
+    name: t('modules.plugins.auth_checker.title'),
     icon: 'bx-shield-quarter',
     color: 'text-red-500'
   },
   {
     id: 'apigen',
-    name: t('modules.plugins.api_generate.title', 'API 生成器'),
+    name: t('modules.plugins.api_generate.title'),
     icon: 'bx-code-alt',
     color: 'text-purple-500'
   },
@@ -75,7 +75,7 @@ const plugins = [
     icon: 'bx-broadcast',
     color: 'text-cyan-500'
   }
-];
+]);
 
 // 弹出插件到独立窗口
 const popOutPlugin = async (pluginId: string) => {
@@ -121,7 +121,7 @@ onMounted(async () => {
   Events.On('plugins:window-closed', handleAllPluginsWindowClosed);
 
   // 初始化时检查哪些插件窗口已打开
-  for (const plugin of plugins) {
+  for (const plugin of plugins.value) {
     try {
       const isOpen = await IsPluginWindowOpen(plugin.id);
       if (isOpen) {
@@ -173,12 +173,12 @@ onUnmounted(() => {
             <i
               v-if="poppedOutPlugins.has(plugin.id)"
               class="bx bx-link-external ml-1 text-xs opacity-60"
-              :title="t('modules.plugins.popped_out', '已弹出到独立窗口')"
+              :title="t('modules.plugins.popped_out')"
             ></i>
           </button>
           <button
             class="pop-out-btn"
-            :title="t('modules.plugins.pop_out', '弹出到独立窗口')"
+            :title="t('modules.plugins.pop_out')"
             @click.stop="popOutPlugin(plugin.id)"
           >
             <i class="bx bx-window-open"></i>
@@ -189,7 +189,7 @@ onUnmounted(() => {
         <div class="ml-auto pl-2">
           <button
             class="pop-out-all-btn"
-            :title="t('modules.plugins.pop_out_all', '弹出全部插件到独立窗口')"
+            :title="t('modules.plugins.pop_out_all')"
             @click="popOutAllPlugins"
           >
             <i class="bx bx-windows"></i>

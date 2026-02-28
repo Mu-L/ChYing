@@ -92,13 +92,13 @@ const sendToRepeater = () => {
 
   // 确保有请求数据
   if (!item.request) {
-    showNotification(t('scanLog.notifications.noRequestData', '请先选择一条有请求数据的记录'), 'error');
+    showNotification(t('scanLog.notifications.noRequestData'), 'error');
     return;
   }
 
   const proxyItem = convertToProxyHistoryItem(item);
   modulesStore.sendToRepeater(proxyItem);
-  showNotification(t('modules.proxy.notifications.sentToRepeater', '已发送到中继器'));
+  showNotification(t('modules.proxy.notifications.sentToRepeater'));
 };
 
 // 发送到 Intruder
@@ -108,13 +108,13 @@ const sendToIntruder = () => {
 
   // 确保有请求数据
   if (!item.request) {
-    showNotification(t('scanLog.notifications.noRequestData', '请先选择一条有请求数据的记录'), 'error');
+    showNotification(t('scanLog.notifications.noRequestData'), 'error');
     return;
   }
 
   const proxyItem = convertToProxyHistoryItem(item);
   modulesStore.sendToIntruder(proxyItem);
-  showNotification(t('modules.proxy.notifications.sentToIntruder', '已发送到入侵者'));
+  showNotification(t('modules.proxy.notifications.sentToIntruder'));
 };
 
 // 键盘快捷键处理
@@ -292,7 +292,7 @@ onUnmounted(() => {
     <!-- 头部工具栏 -->
     <div class="section-header">
       <div class="header-left">
-        <h3>{{ t('scanLog.title', '扫描日志') }}</h3>
+        <h3>{{ t('scanLog.title') }}</h3>
         <div class="header-actions">
           <button
             @click="toggleFilter"
@@ -300,7 +300,7 @@ onUnmounted(() => {
             :class="showFilter ? 'btn-primary' : 'btn-secondary'"
           >
             <i class="bx bx-filter"></i>
-            {{ t('scanLog.filter', '过滤器') }}
+            {{ t('scanLog.filter') }}
           </button>
           <button
             @click="toggleStatistics"
@@ -308,7 +308,7 @@ onUnmounted(() => {
             :class="showStatistics ? 'btn-primary' : 'btn-secondary'"
           >
             <i class="bx bx-bar-chart"></i>
-            {{ t('scanLog.statistics', '统计') }}
+            {{ t('scanLog.statistics') }}
           </button>
         </div>
       </div>
@@ -375,8 +375,8 @@ onUnmounted(() => {
         <EmptyState
           v-if="!loading && filteredLogs.length === 0"
           icon="bx-search-alt"
-          :title="t('scanLog.empty.title', '暂无扫描日志')"
-          :description="t('scanLog.empty.description', '扫描日志将在执行安全扫描时自动记录')"
+          :title="t('scanLog.empty.title')"
+          :description="t('scanLog.empty.description')"
           size="large"
         />
         

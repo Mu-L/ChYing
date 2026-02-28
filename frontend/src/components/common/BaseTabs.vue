@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, toRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useTabsManagement, type BaseTab, type TabGroup } from '../../composables';
 
 // 使用已定义的类型而不是创建新的接口
@@ -29,6 +30,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const { t } = useI18n();
 
 const emit = defineEmits([
   'select-tab',
@@ -369,7 +372,7 @@ defineExpose({
           <button 
             class="group-toggle"
             @click="toggleGroupCollapse(groupData.group.id, $event)" 
-            :title="collapsedGroups.has(groupData.group.id) ? '展开分组' : '折叠分组'"
+            :title="collapsedGroups.has(groupData.group.id) ? t('common.tabs.expand_group') : t('common.tabs.collapse_group')"
           >
             <i :class="['bx', collapsedGroups.has(groupData.group.id) ? 'bx-chevron-right' : 'bx-chevron-down']"></i>
           </button>
@@ -429,7 +432,7 @@ defineExpose({
           v-if="collapsedGroups.has(groupData.group.id)" 
           class="group-collapsed-info"
         >
-          <span class="group-tab-count">{{ groupData.tabs.length }} 个标签</span>
+          <span class="group-tab-count">{{ t('common.tabs.tab_count', { count: groupData.tabs.length }) }}</span>
           <slot name="group-collapsed-indicator" :group="groupData.group" :tabs="groupData.tabs"></slot>
         </div>
       </div>

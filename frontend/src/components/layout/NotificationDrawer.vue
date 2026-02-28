@@ -80,7 +80,7 @@ const vulnerabilityNotifications = computed(() => {
     id: vuln.id,
     type: mapLevelToType(vuln.level),
     title: `${vuln.plugin}: ${vuln.vulnType}`,
-    message: vuln.description || vuln.target || '无具体详情',
+    message: vuln.description || vuln.target || t('layout.footer.no_details'),
     time: formatVulnTimestamp(vuln.createTime),
     read: false,
     vulnerabilityId: vuln.id

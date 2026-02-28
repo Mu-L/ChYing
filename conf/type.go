@@ -94,6 +94,9 @@ type AppConfig struct {
 		Parallel       int  `json:"parallel" yaml:"parallel" mapstructure:"parallel"` // 对一个网站同时扫描的最大 url 个数
 	} `json:"scan" yaml:"scan" mapstructure:"scan"`
 
+	// MCP Server 端口配置
+	MCPPort int `json:"mcp_port" yaml:"mcp_port" mapstructure:"mcp_port"`
+
 	// 日志配置
 	Logging struct {
 		Level string `json:"level" yaml:"level" mapstructure:"level"`

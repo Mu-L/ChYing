@@ -56,11 +56,11 @@ const handleSelectResult = utils.withErrorHandling((result: IntruderResult) => {
       }
     }).catch(err => {
       console.error('获取攻击详情失败:', err);
-      request.value = '获取数据失败';
-      response.value = '获取数据失败';
+      request.value = t('common.status.load_failed');
+      response.value = t('common.status.load_failed');
     });
   }
-}, '处理选中结果');
+}, 'handleSelectResult');
 
 const startAttack = utils.withErrorHandling(async (tabId: string) => {
   if (!tabId || !store.tabs.value) return;
@@ -120,7 +120,7 @@ const startAttack = utils.withErrorHandling(async (tabId: string) => {
     tab.isRunning = false;
     tab.progress.endTime = Date.now();
   }
-}, '启动攻击');
+}, 'startAttack');
 
 const stopAttack = utils.withErrorHandling((tabId: string) => {
   if (!tabId || !store.tabs.value) return;
@@ -129,7 +129,7 @@ const stopAttack = utils.withErrorHandling((tabId: string) => {
   if (!tab) return;
   
   attackController.stopAttack(tab);
-}, '停止攻击');
+}, 'stopAttack');
 
 // 分组模态框状态
 const showGroupModal = ref(false);
@@ -594,14 +594,14 @@ const extractPayloadPositions = (text: string): PayloadPosition[] => {
                   <button
                     class="btn btn-success"
                     @click="wrapSelectionWithPayloadMarker"
-                    title="Mark selected text as payload position"
+                    :title="t('modules.intruder.add_position_tooltip')"
                   >
                     <i class="bx bx-plus-circle"></i> {{ t('modules.intruder.add_position') }}
                   </button>
                   <button
                     class="btn btn-danger"
                     @click="clearAllPayloadMarkers"
-                    title="Clear all payload positions"
+                    :title="t('modules.intruder.clear_all_tooltip')"
                   >
                     <i class="bx bx-trash"></i> {{ t('modules.intruder.clear_all') }}
                   </button>
@@ -688,7 +688,7 @@ const extractPayloadPositions = (text: string): PayloadPosition[] => {
           <!-- 分隔线 -->
           <div 
             class="intruder-panel-divider" 
-            title="拖动调整面板大小"
+            :title="t('modules.proxy.resize_panel')"
             @mousedown.prevent="resizer.startResize($event)"
           ></div>
 

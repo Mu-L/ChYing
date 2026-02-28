@@ -10,6 +10,7 @@ import {
   copyToClipboard,
   extractHeadersAndBody
 } from '../../../utils';
+import { useI18n } from 'vue-i18n';
 
 // 定义props接收响应数据和配置
 const props = defineProps<{
@@ -21,6 +22,8 @@ const props = defineProps<{
   serverDurationMs: number; // 新增时间参数
   wordWrap?: boolean;
 }>();
+
+const { t } = useI18n();
 
 // 定义事件
 const emit = defineEmits<{
@@ -147,7 +150,7 @@ onBeforeUnmount(() => {
           :class="{ 'active': bodyFormatted }"
         >
           <i class="bx bx-code-curly text-base"></i>
-          <span class="tooltip-text">{{ bodyFormatted ? '显示原始格式' : '格式化 Body' }}</span>
+          <span class="tooltip-text">{{ bodyFormatted ? t('common.request_response.show_raw') : t('common.request_response.format_body') }}</span>
         </button>
         <button 
           class="action-button mr-2 tooltip-container"
@@ -155,14 +158,14 @@ onBeforeUnmount(() => {
           :class="{ 'active': wordWrap }"
         >
           <i class="bx bx-text text-base"></i>
-          <span class="tooltip-text">切换自动换行</span>
+          <span class="tooltip-text">{{ t('common.request_response.toggle_word_wrap') }}</span>
         </button>
         <button 
           class="action-button tooltip-container"
           @click="copyResponse"
         >
           <i class="bx bx-clipboard text-base"></i>
-          <span class="tooltip-text">复制响应</span>
+          <span class="tooltip-text">{{ t('common.request_response.copy_response') }}</span>
         </button>
       </div>
     </div>
@@ -198,7 +201,7 @@ onBeforeUnmount(() => {
             ></iframe>
           </div>
           <div v-else class="flex items-center justify-center h-full">
-            <p class="text-gray-500 dark:text-gray-400">该内容无法渲染，请尝试其他视图模式</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ t('common.request_response.render_error') }}</p>
           </div>
         </div>
       </transition>

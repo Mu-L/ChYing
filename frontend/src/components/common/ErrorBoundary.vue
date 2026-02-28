@@ -37,7 +37,7 @@ const { t } = useI18n();
 // 当前错误状态
 const error = ref<ErrorInfo | null>(null);
 const retryCount = ref(0);
-const componentName = ref(props.componentName || '组件');
+const componentName = ref(props.componentName || t('common.error.component_fallback'));
 
 // 重置错误状态
 const resetError = () => {

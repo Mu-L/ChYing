@@ -1,6 +1,7 @@
 /**
  * 扫描目标管理相关类型定义
  */
+import { i18n } from '@/i18n';
 
 // 扫描目标状态
 export type ScanTargetStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'paused';
@@ -169,40 +170,52 @@ export interface SchedulerStatus {
 }
 
 // 状态选项
-export const STATUS_OPTIONS: Array<{label: string; value: ScanTargetStatus}> = [
-  { label: '待扫描', value: 'pending' },
-  { label: '扫描中', value: 'running' },
-  { label: '已完成', value: 'completed' },
-  { label: '失败', value: 'failed' },
-  { label: '已取消', value: 'cancelled' },
-  { label: '暂停', value: 'paused' }
-];
+export function getStatusOptions(): Array<{label: string; value: ScanTargetStatus}> {
+  const t = i18n.global.t;
+  return [
+    { label: t('scan_target.status.pending'), value: 'pending' },
+    { label: t('scan_target.status.running'), value: 'running' },
+    { label: t('scan_target.status.completed'), value: 'completed' },
+    { label: t('scan_target.status.failed'), value: 'failed' },
+    { label: t('scan_target.status.cancelled'), value: 'cancelled' },
+    { label: t('scan_target.status.paused'), value: 'paused' }
+  ];
+}
 
 // 类型选项
-export const TYPE_OPTIONS: Array<{label: string; value: ScanTargetType}> = [
-  { label: '单个URL', value: 'single' },
-  { label: '域名', value: 'domain' },
-  { label: '子网', value: 'subnet' },
-  { label: 'CIDR', value: 'cidr' },
-  { label: '批量目标', value: 'batch' }
-];
+export function getTypeOptions(): Array<{label: string; value: ScanTargetType}> {
+  const t = i18n.global.t;
+  return [
+    { label: t('scan_target.type.single'), value: 'single' },
+    { label: t('scan_target.type.domain'), value: 'domain' },
+    { label: t('scan_target.type.subnet'), value: 'subnet' },
+    { label: t('scan_target.type.cidr'), value: 'cidr' },
+    { label: t('scan_target.type.batch'), value: 'batch' }
+  ];
+}
 
 // 优先级选项
-export const PRIORITY_OPTIONS = [
-  { label: '最高', value: 10 },
-  { label: '高', value: 8 },
-  { label: '中', value: 5 },
-  { label: '低', value: 3 },
-  { label: '最低', value: 1 }
-];
+export function getPriorityOptions(): Array<{label: string; value: number}> {
+  const t = i18n.global.t;
+  return [
+    { label: t('scan_target.priority.highest'), value: 10 },
+    { label: t('scan_target.priority.high'), value: 8 },
+    { label: t('scan_target.priority.medium'), value: 5 },
+    { label: t('scan_target.priority.low'), value: 3 },
+    { label: t('scan_target.priority.lowest'), value: 1 }
+  ];
+}
 
 // 调度类型选项
-export const SCHEDULE_TYPE_OPTIONS = [
-  { label: '立即执行', value: 'once' },
-  { label: '每日', value: 'daily' },
-  { label: '每周', value: 'weekly' },
-  { label: '每月', value: 'monthly' }
-];
+export function getScheduleTypeOptions(): Array<{label: string; value: string}> {
+  const t = i18n.global.t;
+  return [
+    { label: t('scan_target.schedule.once'), value: 'once' },
+    { label: t('scan_target.schedule.daily'), value: 'daily' },
+    { label: t('scan_target.schedule.weekly'), value: 'weekly' },
+    { label: t('scan_target.schedule.monthly'), value: 'monthly' }
+  ];
+}
 
 // 状态颜色映射
 export const STATUS_COLOR_MAP: Record<ScanTargetStatus, string> = {
@@ -214,21 +227,29 @@ export const STATUS_COLOR_MAP: Record<ScanTargetStatus, string> = {
   paused: 'purple'
 };
 
-// 状态文本映射
-export const STATUS_TEXT_MAP: Record<ScanTargetStatus, string> = {
-  pending: '待扫描',
-  running: '扫描中',
-  completed: '已完成',
-  failed: '失败',
-  cancelled: '已取消',
-  paused: '暂停'
-};
+// 状态文本函数
+export function getStatusTextMap(status: ScanTargetStatus): string {
+  const t = i18n.global.t;
+  const map: Record<ScanTargetStatus, string> = {
+    pending: t('scan_target.status.pending'),
+    running: t('scan_target.status.running'),
+    completed: t('scan_target.status.completed'),
+    failed: t('scan_target.status.failed'),
+    cancelled: t('scan_target.status.cancelled'),
+    paused: t('scan_target.status.paused')
+  };
+  return map[status] || status;
+}
 
-// 类型文本映射
-export const TYPE_TEXT_MAP: Record<ScanTargetType, string> = {
-  single: '单个URL',
-  domain: '域名',
-  subnet: '子网',
-  cidr: 'CIDR',
-  batch: '批量目标'
-}; 
+// 类型文本函数
+export function getTypeTextMap(type: ScanTargetType): string {
+  const t = i18n.global.t;
+  const map: Record<ScanTargetType, string> = {
+    single: t('scan_target.type.single'),
+    domain: t('scan_target.type.domain'),
+    subnet: t('scan_target.type.subnet'),
+    cidr: t('scan_target.type.cidr'),
+    batch: t('scan_target.type.batch')
+  };
+  return map[type] || type;
+} 
